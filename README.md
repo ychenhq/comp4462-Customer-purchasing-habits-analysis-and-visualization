@@ -21,7 +21,7 @@ Purchase Amount: Amount spent per purchase
 1. Data Visualization
    - Initial visualizations helped uncover patterns and trends in purchasing behaviors:
 
-   - ***Scatter plot***: This simple chart displays the demographics for age, income distributions as opposed to purchase amount.
+   - ***Scatter plot***: Displays the demographics for age, income distributions as to purchase amount.
     ![age_to_income](https://github.com/ychenhq/comp4471/blob/main/images/age_to_income.png)
 
 
@@ -43,9 +43,7 @@ To gain further insights, we merged the primary dataset with age-based data:
    - ***Enhanced Visualizations***: With geopgrahic location, we can expand the visualization with geographs. Along with age data, we visualized age-income correlations, loyalty score distributions, gender and purchasing habits across different states.
 
 4. Advanced Visualization and Insights
-The combined data enabled us to produce more granular insights:
-
-***Age-Income Correlations***: Analysis of income levels and purchasing trends by age group.
+   - The combined data enabled us to produce more granular insights in ***Age-Income Correlations***, it provides better analysis of income levels and purchasing trends by age group.
 
 
 # Key Findings
