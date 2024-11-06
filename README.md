@@ -19,21 +19,21 @@ Purchase Amount: Amount spent per purchase
 
 ## Project Workflow
 1. Data Visualization
-Initial visualizations helped uncover patterns and trends in purchasing behaviors:
+   -Initial visualizations helped uncover patterns and trends in purchasing behaviors:
 
-  ***Scatter plot***: This simple chart displays the demographics for age, income distributions as opposed to purchase amount.
-![Age and income distribution](https://github.com/ychenhq/comp4471/images/age_to_income.png)
+ -***Scatter plot***: This simple chart displays the demographics for age, income distributions as opposed to purchase amount.
+!(https://github.com/ychenhq/comp4471/images/age_to_income.png)
 
 
-  ***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
-![Age to loyalty distribution](https://github.com/ychenhq/comp4471/images/loyalty_to_age.png)
+ -***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
+!(https://github.com/ychenhq/comp4471/images/loyalty_to_age.png)
 
-These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
+-These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
 
 2. Data Enhancement
 To gain further insights, we merged the primary dataset with age-based data:
 
-***Enhanced Age Segmentation***: Enabled a more detailed analysis of purchasing trends across different age groups.
+-***Enhanced Age Segmentation***: Enabled a more detailed analysis of purchasing trends across different age groups.
 Age-Related Purchasing Insights: Improved understanding of age-specific behaviors, combining with data that includes more fields such as:
 Location: 1 of the 55 states
 Category: Footwear, Clothing etc.
@@ -41,7 +41,7 @@ Season: Spring, Summer, Fall, Winter
 Color: Color of the item purchased
 Item Purchased: Jeans, Glasses, Sweater, Blouse etc.
 
-***Enhanced Visualizations**: With geopgrahic location, we can expand the visualization with geographs. Along with age data, we visualized age-income correlations, loyalty score distributions, gender and purchasing habits across different states.
+-***Enhanced Visualizations**: With geopgrahic location, we can expand the visualization with geographs. Along with age data, we visualized age-income correlations, loyalty score distributions, gender and purchasing habits across different states.
 
 3. Advanced Visualization and Insights
 The combined data enabled us to produce more granular insights:
@@ -61,14 +61,14 @@ Potential improvements include:
 
 ***Additional Data Sources***: Adding datasets related to customer preferences and buying behaviors.
 
-## Predictive Modeling: Using machine learning models to predict purchasing behaviors based on demographic information.
+***Predictive Modeling***: Using machine learning models to predict purchasing behaviors based on demographic information.
 
 ## Getting Started
-Prerequisites
+***Prerequisites***
 Python 3.7+
 Jupyter Notebook
 Libraries: pandas, matplotlib, seaborn, numpy
-Installation
+***Installation***
 Clone this repository:
 `git clone https://github.com/yourusername/customer-purchasing-analysis.git`
 Download the datasets from Kaggle and place them in the data/ folder.
@@ -77,6 +77,4 @@ Install required libraries:
 
 Open Customer_Purchasing_Analysis.ipynb in Jupyter Notebook.
 Run each cell to load, visualize, and analyze the data.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
 
