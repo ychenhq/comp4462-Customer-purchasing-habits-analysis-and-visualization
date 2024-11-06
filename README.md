@@ -19,16 +19,16 @@ Purchase Amount: Amount spent per purchase
 
 ## Project Workflow
 1. Data Visualization
-   -Initial visualizations helped uncover patterns and trends in purchasing behaviors:
+   - Initial visualizations helped uncover patterns and trends in purchasing behaviors:
 
-   -***Scatter plot***: This simple chart displays the demographics for age, income distributions as opposed to purchase amount.
-    ![age_to_income](https://github.com/ychenhq/comp4471/main/images/age_to_income.png)
+   - ***Scatter plot***: This simple chart displays the demographics for age, income distributions as opposed to purchase amount.
+    ![age_to_income](https://github.com/ychenhq/comp4471/blob/main/images/age_to_income.png)
 
 
-   -***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
-    ![loyalty_to_age](https://github.com/ychenhq/comp4471/main/images/loyalty_to_age.png)
+   - ***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
+    ![loyalty_to_age](https://github.com/ychenhq/comp4471/blob/main/images/loyalty_to_age.png)
 
--These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
+   - These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
 
 2. Data Enhancement
 To gain further insights, we merged the primary dataset with age-based data:
