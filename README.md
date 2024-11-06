@@ -33,28 +33,28 @@ Purchase Amount: Amount spent per purchase
 2. Data Enhancement
 To gain further insights, we merged the primary dataset with age-based data:
 
--***Enhanced Age Segmentation***: Enabled a more detailed analysis of purchasing trends across different age groups.
-Age-Related Purchasing Insights: Improved understanding of age-specific behaviors, combining with data that includes more fields such as:
-Location: 1 of the 55 states
-Category: Footwear, Clothing etc.
-Season: Spring, Summer, Fall, Winter
-Color: Color of the item purchased
-Item Purchased: Jeans, Glasses, Sweater, Blouse etc.
+   - ***Enhanced Age Segmentation***: Enabled a more detailed analysis of purchasing trends across different age groups.The enlarged dataset improved understanding of age-specific behaviors, combining with data that includes more fields such as:
+      Location: 1 of the 55 states
+      Category: Footwear, Clothing etc.
+      Season: Spring, Summer, Fall, Winter
+      Color: Color of the item purchased
+      Item Purchased: Jeans, Glasses, Sweater, Blouse etc.
 
--***Enhanced Visualizations**: With geopgrahic location, we can expand the visualization with geographs. Along with age data, we visualized age-income correlations, loyalty score distributions, gender and purchasing habits across different states.
+   - ***Enhanced Visualizations***: With geopgrahic location, we can expand the visualization with geographs. Along with age data, we visualized age-income correlations, loyalty score distributions, gender and purchasing habits across different states.
 
-3. Advanced Visualization and Insights
+4. Advanced Visualization and Insights
 The combined data enabled us to produce more granular insights:
 
-Age-Income Correlations: Analysis of income levels and purchasing trends by age group.
-Loyalty Trends: Comparative visualizations showing loyalty scores across different age demographics.
-Regional and Age-Based Purchasing Behaviors: Detailed comparisons of regional purchasing behaviors segmented by age.
-Key Findings
-Income and Frequency Correlation: Positive correlation in certain age groups between income and purchase frequency.
-Regional Trends by Age: Insights into regional shopping patterns for different age demographics.
+***Age-Income Correlations***: Analysis of income levels and purchasing trends by age group.
+
+
+# Key Findings
+***Income and Frequency Correlation***: Positive correlation in certain age groups between income and purchase frequency.
+***Regional Trends by Age***: Insights into regional shopping patterns for different age demographics.
 Loyalty Scores by Age Group: Differences in brand loyalty scores based on age, indicating age-related tendencies in customer loyalty.
-Conclusion
-This project provides an in-depth exploration of customer purchasing behaviors by merging multiple datasets for comprehensive analysis. The insights gained from combining these datasets can guide marketing strategies and improve customer targeting.
+
+# Conclusion
+This project provides an in-depth visualzation of customer purchasing behaviors by merging 2 datasets for comprehensive data analysis. The visualization dataset can guide marketing strategies and improve customer targeting.
 
 ## Future Work
 Potential improvements include:
