@@ -4,19 +4,18 @@
 This project explores and visualizes customer purchasing behaviors using a Kaggle dataset and enhances the initial data analysis by combining it with an additional dataset on customer age demographics. The goal is to identify key trends, segment customers, and gain insights into factors influencing purchasing habits.
 
 ## Datasets
-Primary Dataset
-<a name="first-dataset">Customer Purchasing Behaviors Dataset</a>: Contains data on customer demographics, income, purchase frequency, loyalty scores, and purchase amounts. Key fields include:
+
+### Primary Dataset
+[Customer Purchasing Behaviors Dataset](https://www.kaggle.com/datasets/hanaksoy/customer-purchasing-behaviors): Contains data on customer demographics, income, purchase frequency, loyalty scores, and purchase amounts. Key fields include:
 Age: Customer age group
 Region: Customer's regional segment
 Annual Income: Customer’s yearly income
 Purchase Frequency: How often purchases are made
 Loyalty Score: Customer loyalty metric
 Purchase Amount: Amount spent per purchase
-## Enhancement Dataset
-<a name="second-dataset">Customer Shopping Trends Dataset</a>: This dataset provides additional insights into customer age demographics, allowing us to refine our segmentation and conduct age-based analyses.
+### Enhancement Dataset
+[Customer Shopping Trends Dataset](https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset): This dataset provides additional insights into customer age demographics, allowing us to refine our segmentation and conduct age-based analyses.
 
-[https://www.kaggle.com/datasets/hanaksoy/customer-purchasing-behaviors](#first-dataset)
-[https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset](#second-dataset)
 
 ## Project Workflow
 1. Data Visualization
@@ -24,6 +23,8 @@ Initial visualizations helped uncover patterns and trends in purchasing behavior
 
 ***Scatter plot***: This simple chart displays the demographics for age, income distributions as opposed to purchase amount.
 ![Age and income distribution](https://github.com/ychenhq/comp4471/images/age_to_income.png)
+
+
 ***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
 ![Age to loyalty distribution](https://github.com/ychenhq/comp4471/images/loyalty_to_age.png)
 These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
