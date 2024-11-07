@@ -1,7 +1,7 @@
 # Customer Purchasing Behaviors Analysis
 
 ## Overview
-This project explores and visualizes customer purchasing behaviors using a Kaggle dataset and enhances the initial data analysis by combining it with an additional dataset on customer age demographics. The goal is to identify key trends, segment customers, and gain insights into factors influencing purchasing habits.
+This project explores and visualizes customer purchasing behaviors based on a Kaggle dataset. The initial data analysis is enhanced by combining the data with an additional dataset on customer age demographics. The goal is to identify key trends, segment customers, and gain insights about factors influencing purchasing habits.
 
 ## Datasets
 
@@ -63,16 +63,26 @@ Potential improvements include:
 
 ## Getting Started
 ***Prerequisites***
+
 Python 3.7+
+
 Jupyter Notebook
+
 Libraries: pandas, matplotlib, seaborn, numpy
+
 ***Installation***
+
 Clone this repository:
+
 `git clone https://github.com/yourusername/customer-purchasing-analysis.git`
+
 Download the datasets from Kaggle and place them in the data/ folder.
+
 Install required libraries:
+
 `pip install -r requirements.txt`
 
 Open Customer_Purchasing_Analysis.ipynb in Jupyter Notebook.
+
 Run each cell to load, visualize, and analyze the data.
 
