@@ -57,7 +57,9 @@ function showStateData(stateAbbr) {
     console.log("viualizing data");
     // Display the chart container
     document.getElementById("chart-container").style.display = "block";
-    document.getElementById("state-name").innerText = `Data for ${stateAbbr}`;
+    document.getElementById(
+      "state-name"
+    ).innerText = `Data for ${stateCodeToName[stateAbbr]}`;
 
     // Clear previous chart if it exists
     if (window.stateChartInstance) {
@@ -66,23 +68,64 @@ function showStateData(stateAbbr) {
 
     // Generate the chart
     const ctx = document.getElementById("stateChart").getContext("2d");
+
+    // Separate data by gender
+    const maleData = data.filter((item) => item.gender === "Male");
+    const femaleData = data.filter((item) => item.gender === "Female");
+
+    // Function to get age counts by gender
+    function getAgeCounts(ages) {
+      const ageBins = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]; // Bin edges
+      const ageCounts = Array(ageBins.length - 1).fill(0);
+
+      // Count number of people in each bin
+      ages.forEach((age) => {
+        for (let i = 0; i < ageBins.length - 1; i++) {
+          if (age >= ageBins[i] && age < ageBins[i + 1]) {
+            ageCounts[i]++;
+          }
+        }
+      });
+
+      return ageCounts;
+    }
+
+    // Get age counts for male and female data
+    const maleAges = maleData.map((item) => parseInt(item.age));
+    const femaleAges = femaleData.map((item) => parseInt(item.age));
+
+    const maleAgeCounts = getAgeCounts(maleAges);
+    const femaleAgeCounts = getAgeCounts(femaleAges);
+
+    // Chart.js Histogram (Bar chart)
     window.stateChartInstance = new Chart(ctx, {
       type: "bar",
       data: {
         labels: [
-          "Metric 1",
-          "Metric 2",
-          "Metric 3",
-          "Metric 4",
-          "Metric 5",
-          "Metric 6",
-        ],
+          "20-25",
+          "25-30",
+          "30-35",
+          "35-40",
+          "40-45",
+          "45-50",
+          "50-55",
+          "55-60",
+          "60-65",
+          "65-70",
+        ], // Age Range labels
         datasets: [
           {
-            label: `${stateAbbr} Data`,
-            data: data,
+            label: "Male",
+            data: maleAgeCounts,
             backgroundColor: "rgba(54, 162, 235, 0.6)",
             borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+          {
+            label: "Female",
+            data: femaleAgeCounts,
+            backgroundColor: "rgba(255, 99, 132, 0.6)",
+            borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 1,
           },
         ],
@@ -90,7 +133,17 @@ function showStateData(stateAbbr) {
       options: {
         responsive: true,
         scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Age Range",
+            },
+          },
           y: {
+            title: {
+              display: true,
+              text: "Frequency",
+            },
             beginAtZero: true,
           },
         },
