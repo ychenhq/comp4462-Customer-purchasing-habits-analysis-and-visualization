@@ -1,46 +1,3 @@
-// Handle state click
-function showStateData(stateAbbr) {
-  const data = stateData[stateAbbr];
-  if (data) {
-    // Display the chart container
-    document.getElementById("chart-container").style.display = "block";
-    document.getElementById("state-name").innerText = `Data for ${stateAbbr}`;
-
-    // Generate the chart
-    const ctx = document.getElementById("stateChart").getContext("2d");
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: [
-          "Metric 1",
-          "Metric 2",
-          "Metric 3",
-          "Metric 4",
-          "Metric 5",
-          "Metric 6",
-        ],
-        datasets: [
-          {
-            label: `${stateAbbr} Data`,
-            data: data,
-            backgroundColor: "rgba(54, 162, 235, 0.6)",
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
-  }
-}
-
 var simplemaps_usmap_mapdata = {
   main_settings: {
     //General settings
@@ -444,14 +401,6 @@ var simplemaps_usmap_mapdata = {
       y: "580",
     },
   },
-};
-
-// Data for each state
-const stateData = {
-  FL: [12, 19, 3, 5, 2, 3], // Replace these values with your state-specific data
-  CA: [7, 11, 5, 8, 3, 7],
-  NY: [15, 10, 5, 9, 2, 4],
-  // Add more state data as needed
 };
 
 // Map settings to call showStateData on click

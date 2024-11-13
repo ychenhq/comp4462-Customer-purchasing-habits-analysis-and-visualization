@@ -3,7 +3,8 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>Map Example</title>
+    <title>US Map Customer Purchasing Visualization</title>
+	<link rel="stylesheet" href="styles.css">
 	<script src="constants.js"></script>
     <script src="mapdata.js"></script>
     <script src="usmap.js"></script>
@@ -14,16 +15,50 @@
 	<body>
 		<div class="main-container">
 			<div>
-				<h1>US Map</h1>
-				<div style="max-width: 1200px"> <!-- Keep map above fold -->
-					<div id="map"></div>
+				<h1>Customer Purchasing Behaviour</h1>
+				<div class="fixed-container" >
+					<div class="button-group">
+					  <button onclick="showContent('description')">Description</button>
+					  <button onclick="showContent('mapSection')">Map</button>
+					  <button onclick="showContent('dataOverview')">Data Overview</button>
+					</div>
+				
+					<!-- Content Sections -->
+					<div id="mapSection" class="content-section" style="max-width: 1200px">
+						<p>Purchasing Amount Intensity</p>
+						<div id="map"></div>
+						<div id="heatmapLegend" class="heatmap-legend"></div>
+					</div>
+
+					<div id="description" class="content-section">
+					  <h2>Description</h2>
+					  <p>This section describes the customer purchasing behavior.</p>
+					</div>
+				
+					<div id="dataOverview" class="content-section">
+					  <h2>Data Overview</h2>
+					  <p>This section provides an overview of the data.</p>
+					</div>
 				</div>
-				<!-- <div>Please read the <a href="http://simplemaps.com/docs">documentation</a> to learn how to customize this map.</div> -->
+				
 			</div>
 			 <!-- Container for the chart -->
-			<div id="chart-container" style="max-width: 1200px">
-				<h2 id="state-name"></h2>
-				<canvas id="stateChart" width="400px" height="200px"></canvas>
+			<div id="chart-container" style="max-width: 1000px; padding: 1%">
+				<div>
+					<button id = "chart-button" onclick="showStateData(null, 'gender')"> 
+						Gender Distribution
+					</button>
+					<button id = "chart-button" onclick="showStateData(null, 'color')">
+						Color Preferences
+					</button>
+					<button id = "chart-button" onclick="showStateData(null, 'frequency')">
+						Purchase Frequency
+					</button>
+				</div>
+				<div id="bar-chart-gender">
+					<h2 id="state-name"></h2>
+					<canvas id="stateChart" ></canvas>
+				</div>
 			</div>
 		</div>
 		

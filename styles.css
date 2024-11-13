@@ -1,0 +1,77 @@
+#chart-button {
+    background-color: #1BA1E2; /* Button background color */
+    color: white; /* Text color */
+    font-size: 16px; /* Font size */
+    padding: 10px 20px; /* Padding around the button */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+
+  /* Hover and active states */
+  #chart-button:hover {
+    background-color: #00ABA9; /* Slightly different color on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+  }
+
+  #chart-button:active {
+    background-color: #1BA1E2; /* Darker color when pressed */
+    transform: translateY(0); /* Reset transform on click */
+  }
+
+  /* Responsive sizing for smaller screens */
+  @media (max-width: 600px) {
+    #chart-button-button {
+      font-size: 14px; /* Slightly smaller font on small screens */
+      padding: 8px 16px;
+    }
+  }
+
+  .fixed-container {
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: auto;
+  }
+  
+  /* Button Group */
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .button-group button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .button-group button:hover {
+    background-color: #555;
+  }
+    
+  .content-section.active {
+    display: block; /* Show only the active section */
+  }
+  
+  .hidden {
+    display: none;
+  }
+
+  .heatmap-legend {
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to right, rgb(0, 0, 255), rgb(0, 0, 0));
+    margin-top: 10px;
+    border: 1px solid #ccc;
+  }
