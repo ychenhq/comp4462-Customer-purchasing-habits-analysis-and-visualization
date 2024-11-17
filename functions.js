@@ -29,7 +29,12 @@ function updateHeatmapLegend(minAmount, maxAmount) {
   const gradient = `linear-gradient(to right, ${minColor}, ${maxColor})`;
 
   // Apply the gradient to the legend
-  document.getElementById("heatmapLegend").style.background = gradient;
+  const legend = document.getElementById("heatmapLegend");
+  legend.querySelector(".legend-gradient").style.background = gradient;
+  const lowLabel = legend.querySelector(".legend-scale span:first-child");
+  const highLabel = legend.querySelector(".legend-scale span:last-child");
+  lowLabel.textContent = `$${minAmount.toLocaleString()}`;
+  highLabel.textContent = `$${maxAmount.toLocaleString()}`;
 }
 
 function updateMapWithHeatmap() {
@@ -96,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       globalData = locationData;
       // Access data for "New Jersey"
-      // console.log(locationData["New Jersey"]);
+      console.log(locationData["New Jersey"]);
     })
     .catch((error) => {
       console.error("Error loading CSV file:", error);
@@ -131,64 +136,59 @@ function showStateData(stateAbbr, chartType = "gender") {
     if (chartType == "gender") {
       document.getElementById(
         "state-name"
-      ).innerText = `Gender Distribution for ${stateCodeToName[chosenState]}`;
+      ).innerText = `Gender Distribution for Items Purchased in ${stateCodeToName[chosenState]}`;
       const ctx = document.getElementById("stateChart").getContext("2d");
 
-      // Separate data by gender
-      const maleData = data.filter((item) => item.gender === "Male");
-      const femaleData = data.filter((item) => item.gender === "Female");
+      // Aggregate data for items purchased by gender
+      const genderItemCounts = {
+        Male: {},
+        Female: {},
+      };
 
-      // Function to get age counts by gender
-      function getAgeCounts(ages) {
-        const ageBins = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]; // Bin edges
-        const ageCounts = Array(ageBins.length - 1).fill(0);
+      // Count the frequency of each item purchased by gender
+      data.forEach((item) => {
+        const gender = item.gender || "Unknown";
+        const purchasedItem = item.item_purchased || "Unknown Item";
 
-        // Count number of people in each bin
-        ages.forEach((age) => {
-          for (let i = 0; i < ageBins.length - 1; i++) {
-            if (age >= ageBins[i] && age < ageBins[i + 1]) {
-              ageCounts[i]++;
-            }
-          }
-        });
+        if (!genderItemCounts[gender]) {
+          genderItemCounts[gender] = {};
+        }
+        genderItemCounts[gender][purchasedItem] =
+          (genderItemCounts[gender][purchasedItem] || 0) + 1;
+      });
 
-        return ageCounts;
-      }
+      // Extract item labels and corresponding data for males and females
+      const allItems = Array.from(
+        new Set(
+          Object.keys(genderItemCounts.Male || {}).concat(
+            Object.keys(genderItemCounts.Female || {})
+          )
+        )
+      );
 
-      // Get age counts for male and female data
-      const maleAges = maleData.map((item) => parseInt(item.age));
-      const femaleAges = femaleData.map((item) => parseInt(item.age));
+      const maleItemCounts = allItems.map(
+        (item) => genderItemCounts.Male[item] || 0
+      );
+      const femaleItemCounts = allItems.map(
+        (item) => genderItemCounts.Female[item] || 0
+      );
 
-      const maleAgeCounts = getAgeCounts(maleAges);
-      const femaleAgeCounts = getAgeCounts(femaleAges);
-
-      // Chart.js Histogram (Bar chart)
+      // Create the bar chart with items on the x-axis
       window.stateChartInstance = new Chart(ctx, {
         type: "bar",
         data: {
-          labels: [
-            "20-25",
-            "25-30",
-            "30-35",
-            "35-40",
-            "40-45",
-            "45-50",
-            "50-55",
-            "55-60",
-            "60-65",
-            "65-70",
-          ], // Age Range labels
+          labels: allItems, // Items purchased
           datasets: [
             {
               label: "Male",
-              data: maleAgeCounts,
+              data: maleItemCounts,
               backgroundColor: "rgba(54, 162, 235, 0.6)",
               borderColor: "rgba(54, 162, 235, 1)",
               borderWidth: 1,
             },
             {
               label: "Female",
-              data: femaleAgeCounts,
+              data: femaleItemCounts,
               backgroundColor: "rgba(255, 99, 132, 0.6)",
               borderColor: "rgba(255, 99, 132, 1)",
               borderWidth: 1,
@@ -197,11 +197,21 @@ function showStateData(stateAbbr, chartType = "gender") {
         },
         options: {
           responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+          },
           scales: {
             x: {
               title: {
                 display: true,
-                text: "Age Range",
+                text: "Items Purchased",
+              },
+              ticks: {
+                autoSkip: false, // Prevent skipping of item labels
+                maxRotation: 90,
+                minRotation: 70,
               },
             },
             y: {
@@ -298,18 +308,41 @@ function showStateData(stateAbbr, chartType = "gender") {
       document.getElementById(
         "state-name"
       ).innerText = `Purchase Frequencies in ${stateCodeToName[chosenState]}`;
-      const purchaseData = {
-        1: 50,
-        2: 100,
-        3: 50,
-      };
+
+      const frequencyCounts = {};
+
+      // Build frequencyCounts with additional details
+      data.forEach((item) => {
+        const frequency = item.frequency_of_purchases;
+        const category = item.category || "Unknown Category";
+        const itemPurchased = item.item_purchased || "Unknown Item";
+
+        if (frequency) {
+          if (!frequencyCounts[frequency]) {
+            frequencyCounts[frequency] = {
+              count: 0,
+              categories: new Set(),
+              items: new Set(),
+            };
+          }
+          frequencyCounts[frequency].count++;
+          frequencyCounts[frequency].categories.add(category);
+          frequencyCounts[frequency].items.add(itemPurchased);
+        }
+      });
+
       // Clear previous chart if it exists
       if (window.stateChartInstance) {
         window.stateChartInstance.destroy();
       }
 
-      const labels = Object.keys(purchaseData);
-      const data = Object.values(purchaseData);
+      // Prepare data for the chart
+      const labels = Object.keys(frequencyCounts).map(
+        (freq) => frequencyLabels[freq]
+      );
+      const dataCounts = Object.values(frequencyCounts).map(
+        (entry) => entry.count
+      );
 
       const ctx = document.getElementById("stateChart").getContext("2d");
       window.stateChartInstance = new Chart(ctx, {
@@ -319,8 +352,16 @@ function showStateData(stateAbbr, chartType = "gender") {
           datasets: [
             {
               label: "Purchase Frequency",
-              data: data,
-              backgroundColor: ["#ff9999", "#66b3ff", "#99ff99"],
+              data: dataCounts,
+              backgroundColor: [
+                "#003049",
+                "#d62828",
+                "#f77f00",
+                "#fcbf49",
+                "#eae2b7",
+                "#2a9d8f",
+                "#6a4c93",
+              ],
               borderColor: "#ffffff",
               borderWidth: 2,
             },
@@ -341,13 +382,22 @@ function showStateData(stateAbbr, chartType = "gender") {
             tooltip: {
               callbacks: {
                 label: function (tooltipItem) {
-                  let total = tooltipItem.dataset.data.reduce(
-                    (acc, val) => acc + val,
-                    0
-                  );
-                  let percentage =
+                  const frequency = labels[tooltipItem.dataIndex];
+                  const entry = frequencyCounts[frequency];
+                  const total = dataCounts.reduce((acc, val) => acc + val, 0);
+                  const percentage =
                     ((tooltipItem.raw / total) * 100).toFixed(1) + "%";
-                  return `${tooltipItem.label}: ${percentage}`;
+
+                  // Format category and items
+                  const categories = Array.from(entry.categories).join(", ");
+                  const items = Array.from(entry.items).join(", ");
+
+                  return [
+                    `${tooltipItem.label}: ${percentage}`,
+                    `Count: ${entry.count}`,
+                    `Categories: ${categories}`,
+                    `Items: ${items}`,
+                  ];
                 },
               },
             },

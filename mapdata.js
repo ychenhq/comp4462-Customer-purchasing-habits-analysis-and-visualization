@@ -755,4 +755,11 @@ simplemaps_usmap_mapdata.state_specific = {
     hover_color: "#696969",
     url: "javascript:showStateData('CA')",
   },
+  MI: {
+    name: "Michigan",
+    description: "default",
+    color: "default",
+    hover_color: "default",
+    url: "javascript:showStateData('MI')",
+  },
 };

@@ -180,3 +180,14 @@ const statePurchaseAmounts = {
   WI: 17471,
   WY: 22067,
 };
+
+// Map to translate frequencies to labels
+const frequencyLabels = {
+  Weekly: "Weekly",
+  Annually: "Annually",
+  "Every 3 Months": "Every 3 Months",
+  "Bi-Weekly": "Bi-Weekly",
+  Quarterly: "Quarterly",
+  Fortnightly: "Fortnightly",
+  Monthly: "Monthly",
+};

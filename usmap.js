@@ -7106,7 +7106,7 @@ var simplemaps_usmap_mapinfo = {
         (j = s.custom_shapes ? s.custom_shapes : {}),
         (L = !!s.initial_back && "no" != s.initial_back && s.initial_back),
         (R = "yes" == s.hide_eastern_labels),
-        (M = s.link_text ? s.link_text : "View Website"),
+        (M = s.link_text ? s.link_text : "View Details"),
         (O = !!s.order_number && s.order_number),
         (I = s.zoom_percentage ? s.zoom_percentage : 0.99);
     }

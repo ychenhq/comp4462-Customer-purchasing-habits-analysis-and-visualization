@@ -19,7 +19,7 @@
 				<div class="fixed-container" >
 					<div class="button-group">
 					  <button onclick="showContent('description')">Description</button>
-					  <button onclick="showContent('mapSection')">Map</button>
+					  <button onclick="showContent('mapSection')">Heatmap</button>
 					  <button onclick="showContent('dataOverview')">Data Overview</button>
 					</div>
 				
@@ -27,7 +27,14 @@
 					<div id="mapSection" class="content-section" style="max-width: 1200px">
 						<p>Purchasing Amount Intensity</p>
 						<div id="map"></div>
-						<div id="heatmapLegend" class="heatmap-legend"></div>
+						<div id="heatmapLegend" class="heatmap-legend">
+							<p>Purchase Intensity</p>
+							<div class="legend-scale">
+							  <span>Low</span>
+							  <div class="legend-gradient"></div>
+							  <span>High</span>
+							</div>
+						  </div>
 					</div>
 
 					<div id="description" class="content-section">
@@ -43,7 +50,7 @@
 				
 			</div>
 			 <!-- Container for the chart -->
-			<div id="chart-container" style="max-width: 1000px; padding: 1%">
+			<div id="chart-container" >
 				<div>
 					<button id = "chart-button" onclick="showStateData(null, 'gender')"> 
 						Gender Distribution
@@ -55,7 +62,7 @@
 						Purchase Frequency
 					</button>
 				</div>
-				<div id="bar-chart-gender">
+				<div id="bar-chart-gender" style="max-width: 1000px; padding: 1% ; max-height: 500px;">
 					<h2 id="state-name"></h2>
 					<canvas id="stateChart" ></canvas>
 				</div>
