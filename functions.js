@@ -1,4 +1,5 @@
 // Function to load CSV files
+let rawData = null;
 let globalData = null;
 let chosenState = null;
 
@@ -10,6 +11,9 @@ function showContent(sectionId) {
   });
 
   // Show the selected content section
+  if (sectionId == "dataOverview") {
+    createOverviewVis();
+  }
   document.getElementById(sectionId).classList.remove("hidden");
 }
 
@@ -61,6 +65,88 @@ function updateMapWithHeatmap() {
   updateHeatmapLegend(minAmount, maxAmount);
 }
 
+function createOverviewVis() {
+  const canvas = document.getElementById("stateChart").getContext("2d");
+  let chartStatus = Chart.getChart("stateChart");
+  if (chartStatus == undefined) {
+    const seasonItemCounts = {};
+
+    // Aggregate counts for each item by season
+    rawData.forEach((entry) => {
+      const season = entry.season;
+      const item = entry.item_purchased;
+
+      if (!seasonItemCounts[item]) {
+        seasonItemCounts[item] = { Spring: 0, Summer: 0, Fall: 0, Winter: 0 };
+      }
+      seasonItemCounts[item][season] += 1;
+    });
+
+    // Prepare data for Chart.js
+    const items = Object.keys(seasonItemCounts); // Items on y-axis
+    const seasons = ["Spring", "Summer", "Fall", "Winter"]; // Seasons as datasets
+
+    const seasonColors = {
+      Spring: "#77DD77",
+      Summer: "#FFB347",
+      Fall: "#FF6961",
+      Winter: "#AEC6CF",
+    };
+
+    const datasets = seasons.map((season) => {
+      const data = items.map((item) => seasonItemCounts[item][season]);
+      return {
+        label: season,
+        data: data,
+        backgroundColor: seasonColors[season], // Use color code for the season
+        borderWidth: 1,
+      };
+    });
+
+    // Create the chart
+    window.stateChartInstance = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: items, // Items on the y-axis
+        datasets: datasets, // Stacked data for each season
+      },
+      options: {
+        indexAxis: "y", // Horizontal bar chart
+        responsive: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                return `${context.dataset.label}: ${context.raw}`;
+              },
+            },
+          },
+          legend: {
+            position: "top",
+          },
+        },
+        scales: {
+          x: {
+            stacked: true, // Stack the bars horizontally
+            title: {
+              display: true,
+              text: "Total Amount",
+            },
+            beginAtZero: true,
+          },
+          y: {
+            stacked: true, // Keep the stacked structure
+            title: {
+              display: true,
+              text: "Items",
+            },
+          },
+        },
+      },
+    });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   function loadCSV(filePath) {
     return new Promise((resolve, reject) => {
@@ -87,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log(
       // `Number of rows: ${numRows}, Number of columns: ${numColumns}`
       // );
-
+      rawData = data;
       // Separate data by location
       const locationData = {};
 
@@ -108,6 +194,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   showContent("mapSection");
   updateMapWithHeatmap();
+
+  loadAndPlot3D();
 });
 
 // Handle state data
@@ -128,16 +216,16 @@ function showStateData(stateAbbr, chartType = "gender") {
     // Display the chart container
     document.getElementById("chart-container").style.display = "block";
 
-    // Clear previous chart if it exists
-    if (window.stateChartInstance) {
-      window.stateChartInstance.destroy();
+    const ctx = document.getElementById("stateChartDetails").getContext("2d");
+
+    if (Chart.getChart("stateChartDetails") != undefined) {
+      Chart.getChart("stateChartDetails").destroy();
     }
 
     if (chartType == "gender") {
       document.getElementById(
         "state-name"
       ).innerText = `Gender Distribution for Items Purchased in ${stateCodeToName[chosenState]}`;
-      const ctx = document.getElementById("stateChart").getContext("2d");
 
       // Aggregate data for items purchased by gender
       const genderItemCounts = {
@@ -174,7 +262,7 @@ function showStateData(stateAbbr, chartType = "gender") {
       );
 
       // Create the bar chart with items on the x-axis
-      window.stateChartInstance = new Chart(ctx, {
+      new Chart(ctx, {
         type: "bar",
         data: {
           labels: allItems, // Items purchased
@@ -230,10 +318,6 @@ function showStateData(stateAbbr, chartType = "gender") {
         "state-name"
       ).innerText = `Top Color Preferences in ${stateCodeToName[chosenState]}`;
       const colorCounts = {};
-      // Clear previous chart if it exists
-      if (window.stateChartInstance) {
-        window.stateChartInstance.destroy();
-      }
 
       // Count occurrences of each color
       data.forEach((item) => {
@@ -251,8 +335,7 @@ function showStateData(stateAbbr, chartType = "gender") {
       ); // Default to gray if color is not found
 
       // Generate the Chart.js bar chart
-      const ctx = document.getElementById("stateChart").getContext("2d");
-      window.stateChartInstance = new Chart(ctx, {
+      new Chart(ctx, {
         type: "bar",
         data: {
           labels: sortedColors,
@@ -331,11 +414,6 @@ function showStateData(stateAbbr, chartType = "gender") {
         }
       });
 
-      // Clear previous chart if it exists
-      if (window.stateChartInstance) {
-        window.stateChartInstance.destroy();
-      }
-
       // Prepare data for the chart
       const labels = Object.keys(frequencyCounts).map(
         (freq) => frequencyLabels[freq]
@@ -344,8 +422,7 @@ function showStateData(stateAbbr, chartType = "gender") {
         (entry) => entry.count
       );
 
-      const ctx = document.getElementById("stateChart").getContext("2d");
-      window.stateChartInstance = new Chart(ctx, {
+      new Chart(ctx, {
         type: "polarArea",
         data: {
           labels: labels,

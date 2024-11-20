@@ -7,8 +7,11 @@
 	<link rel="stylesheet" href="styles.css">
 	<script src="constants.js"></script>
     <script src="mapdata.js"></script>
+	<!--<script src="ridgeline.js"></script>-->
     <script src="usmap.js"></script>
+	<script src="3D.js"></script>
 	<script src="functions.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>	
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   </head>
@@ -39,12 +42,15 @@
 
 					<div id="description" class="content-section">
 					  <h2>Description</h2>
-					  <p>This section describes the customer purchasing behavior.</p>
+					  <div id="3dCluster" style="width: 100%; height: 600px;"></div>
 					</div>
 				
 					<div id="dataOverview" class="content-section">
 					  <h2>Data Overview</h2>
-					  <p>This section provides an overview of the data.</p>
+					  <div>
+						<!--<div id="ridgeline-container"></div>--->
+						<canvas id="stateChart" width="400" height="200"></canvas>
+					  </div>
 					</div>
 				</div>
 				
@@ -64,7 +70,7 @@
 				</div>
 				<div id="bar-chart-gender" style="max-width: 1000px; padding: 1% ; max-height: 500px;">
 					<h2 id="state-name"></h2>
-					<canvas id="stateChart" ></canvas>
+					<canvas id="stateChartDetails" ></canvas>
 				</div>
 			</div>
 		</div>

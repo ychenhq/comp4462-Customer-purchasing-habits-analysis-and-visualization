@@ -104,3 +104,8 @@
     background: linear-gradient(to right, rgb(0, 0, 255), rgb(0, 0, 128), rgb(0, 0, 64));
     border: 1px solid #ccc;
   }
+
+  #ridgeline-container {
+    margin: 20px;
+    width: 800px;
+  }
