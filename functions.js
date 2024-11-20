@@ -14,6 +14,7 @@ function showContent(sectionId) {
   if (sectionId == "dataOverview") {
     createOverviewVis();
   }
+
   document.getElementById(sectionId).classList.remove("hidden");
 }
 
@@ -188,13 +189,13 @@ document.addEventListener("DOMContentLoaded", function () {
       globalData = locationData;
       // Access data for "New Jersey"
       console.log(locationData["New Jersey"]);
+      createSankeyChart();
     })
     .catch((error) => {
       console.error("Error loading CSV file:", error);
     });
   showContent("mapSection");
   updateMapWithHeatmap();
-
   loadAndPlot3D();
 });
 
