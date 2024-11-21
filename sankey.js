@@ -2,34 +2,55 @@ function SankeyChart(
   { nodes, links },
   {
     format = ",",
-    align = "justify",
+    align = "justify", // Alignment of nodes
     nodeId = (d) => d.id,
     nodeWidth = 15,
     nodePadding = 10,
     width = 1000,
-    height = 600,
+    height = 1000,
     colors = d3.schemeTableau10,
   } = {}
 ) {
-  const LS = d3.map(links, (d) => d.source);
-  const LT = d3.map(links, (d) => d.target);
-  const LV = d3.map(links, (d) => d.value);
+  const aggregatedLinks = Array.from(
+    d3.group(links, (d) => `${d.source}-${d.target}`),
+    ([, group]) => ({
+      source: group[0].source,
+      target: group[0].target,
+      value: d3.sum(group, (d) => d.value),
+    })
+  );
 
-  if (!nodes) nodes = Array.from(new Set([...LS, ...LT]), (id) => ({ id }));
+  if (!nodes) {
+    nodes = Array.from(
+      new Set([
+        ...aggregatedLinks.map((l) => l.source),
+        ...aggregatedLinks.map((l) => l.target),
+      ]),
+      (id) => ({ id })
+    );
+  }
+
   const color = d3.scaleOrdinal(
     nodes.map((d) => d.id),
     colors
   );
 
-  d3
+  // Sankey layout
+  const sankey = d3
     .sankey()
     .nodeId((d) => d.id)
     .nodeWidth(nodeWidth)
     .nodePadding(nodePadding)
+    .nodeAlign(d3[`sankey${align[0].toUpperCase() + align.slice(1)}`]) // Align nodes
     .extent([
       [1, 1],
       [width - 1, height - 1],
-    ])({ nodes, links });
+    ]);
+
+  const { nodes: sankeyNodes, links: sankeyLinks } = sankey({
+    nodes: nodes.map((d) => Object.assign({}, d)),
+    links: aggregatedLinks.map((d) => Object.assign({}, d)),
+  });
 
   const svg = d3
     .create("svg")
@@ -37,55 +58,61 @@ function SankeyChart(
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height]);
 
-  // Add nodes
+  // Draw nodes (proportional to total link value)
   svg
     .append("g")
     .selectAll("rect")
-    .data(nodes)
+    .data(sankeyNodes)
     .join("rect")
     .attr("x", (d) => d.x0)
     .attr("y", (d) => d.y0)
     .attr("height", (d) => d.y1 - d.y0)
     .attr("width", (d) => d.x1 - d.x0)
-    .attr("fill", (d) => color(d.id));
+    .attr("fill", (d) => color(d.id))
+    .append("title")
+    .text((d) => `${d.id}\n${d3.format(format)(d.value)}`);
 
-  // Add links with visible stroke and increased width
+  // Draw links
   svg
     .append("g")
     .attr("fill", "none")
     .selectAll("path")
-    .data(links)
+    .data(sankeyLinks)
     .join("path")
     .attr("d", d3.sankeyLinkHorizontal())
     .attr("stroke-width", (d) => Math.max(1, d.width))
-    .attr("stroke", (d) => color(d.source)) // Color links by source node
-    .attr("opacity", 0.7); // Adjust opacity to make links more visible
+    .attr("stroke", (d) => color(d.source.id))
+    .attr("opacity", 0.7)
+    .append("title")
+    .text(
+      (d) => `${d.source.id} → ${d.target.id}\n${d3.format(format)(d.value)}`
+    );
 
-  // Add labels to nodes
+  // Add labels
   svg
     .append("g")
     .selectAll("text")
-    .data(nodes)
+    .data(sankeyNodes)
     .join("text")
-    .attr("x", (d) => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)) // Position on left or right
-    .attr("y", (d) => (d.y1 + d.y0) / 2) // Center vertically
-    .attr("dy", "0.35em") // Align text vertically
-    .attr("text-anchor", (d) => (d.x0 < width / 2 ? "start" : "end")) // Align text to start or end
-    .text((d) => d.id) // Node name
-    .style("font-size", "14px") // Increase font size for better readability
+    .attr("x", (d) => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
+    .attr("y", (d) => (d.y0 + d.y1) / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", (d) => (d.x0 < width / 2 ? "start" : "end"))
+    .text((d) => d.id)
+    .style("font-size", "14px")
     .style("font-family", "sans-serif")
-    .style("fill", "#000"); // Set text color to black for better contrast
+    .style("fill", "#000");
 
   return svg.node();
 }
 
 async function createSankeyChart() {
-  // Filter and clean the data if necessary
+  // Filter and clean the data
   const filteredData = rawData.filter(
-    (row) => row.item_purchased && row.color && row.category && row.season // Ensure all fields are present
+    (row) => row.item_purchased && row.color && row.category && row.season
   );
 
-  // Create nodes and links for the Sankey diagram
+  // Create nodes and links
   const nodes = [];
   const links = [];
 
@@ -110,10 +137,7 @@ async function createSankeyChart() {
     links.push({ source: category, target: season, value: 1 });
   });
 
-  console.log("Nodes:", nodes);
-  console.log("Links:", links);
-
-  // Render the Sankey diagram
+  // Render Sankey chart
   const chart = SankeyChart(
     { nodes, links },
     {
@@ -121,6 +145,7 @@ async function createSankeyChart() {
       height: 800,
       nodeWidth: 20,
       nodePadding: 15,
+      align: "justify", // Options: "left", "right", "justify", or "center"
     }
   );
 
