@@ -24,14 +24,13 @@
 				<h1>Customer Purchasing Behaviour</h1>
 				<div class="fixed-container" >
 					<div class="button-group">
-					  <button onclick="showContent('description')">Description</button>
-					  <button onclick="showContent('mapSection')">Heatmap</button>
 					  <button onclick="showContent('dataOverview')">Data Overview</button>
+					  <button onclick="showContent('mapSection')">Heatmap</button>
 					</div>
 				
 					<!-- Content Sections -->
 					<div id="mapSection" class="content-section" style="max-width: 1200px">
-						<p>Purchasing Amount Intensity</p>
+						<h2>Purchasing Amount Intensity</h2>
 						<div id="map"></div>
 						<div id="heatmapLegend" class="heatmap-legend">
 							<p>Purchase Intensity</p>
@@ -42,39 +41,68 @@
 							</div>
 						  </div>
 					</div>
-
-					<div id="description" class="content-section">
-					  <h2>Description</h2>
-					  <div id="3dCluster" style="width: 100%; height: 600px;"></div>
-					</div>
 				
 					<div id="dataOverview" class="content-section">
-					  <h2>Data Overview</h2>
-					  <div>
-						<!--<div id="ridgeline-container"></div>--->
-						<div id="sankey-chart"></div>
-						<canvas id="stateChart" width="400" height="200"></canvas>
-					  </div>
+						<h2>Data Analysis</h2>
+						<div class="chart-container-3d" style="display: flex; flex-direction: row;">
+							<div id="3dCluster" style=" max-height: 600px;"></div>
+							<!-- Text Box for Cluster Details -->
+							<div style="max-height: 90%; overflow-y: auto; padding: 15px; font-size: 16px;">
+							<h3>Cluster Details</h3>
+							<p>
+								The dataset shows that certain features dominate within clusters, with notable differences primarily in gender, color preferences, subscription status, and purchasing patterns. While the clusters share similarities, distinctions emerge in lifestyle and purchasing behavior.
+							</p>
+							<ul>
+								<li><b>Cluster 0:</b> Middle-aged individuals (avg. age ~44), predominantly male, prefer clothing and black items, frequent promo codes, “Next Day Air” shipping, quarterly purchases, $58.92 per purchase, avg. review rating: 3.73.</li>
+								<li><b>Cluster 1:</b> Middle-aged individuals (avg. age ~44), predominantly female, prefer clothing and charcoal items, no discounts, “Express” shipping, monthly purchases, $59.98 per purchase, avg. review rating: 3.78.</li>
+								<li><b>Cluster 2:</b> Slightly older individuals (avg. age ~44.2), predominantly male, are subscribers, prefer gold items, use discounts, “Express” shipping, annual purchases, $59.49 per purchase, avg. review rating: 3.74.</li>
+								<li><b>Cluster 3:</b> Middle-aged individuals (avg. age ~44), predominantly female, not subscribers, prefer violet items, no discounts, “Free Shipping,” bi-weekly purchases, $60.25 per purchase, avg. review rating: 3.74.</li>
+							</ul>
+							<p>
+								<b>Summary:</b> Clusters 0 and 1 (~70%) reflect frequent customers in their mid-40s, differing in gender and shipping preferences. Clusters 2 and 3 (~30%) reveal specialized subscription and shipping behaviors, suggesting potential for targeted campaigns.
+							</p>
+							<button id="chart-button" onclick="viewSankeyChart(true)">
+								View Sankey Chart
+							</button>
+							</div>
+						</div>
+						<div class="sankey-chart-container hidden">
+							<div style="display: flex; flex-direction: row;">
+								<div id="sankey-chart"></div>
+								<h2>Sankey Chart</h2>
+								<button id="chart-button" onclick="viewSankeyChart(false)">
+									Back
+								</button>
+							</div>
+							
+						</div>
 					</div>
 				</div>
 				
 			</div>
 			 <!-- Container for the chart -->
-			<div id="chart-container" >
-				<div>
-					<button id = "chart-button" onclick="showStateData(null, 'gender')"> 
-						Gender Distribution
-					</button>
-					<button id = "chart-button" onclick="showStateData(null, 'color')">
-						Color Preferences
-					</button>
-					<button id = "chart-button" onclick="showStateData(null, 'frequency')">
-						Purchase Frequency
-					</button>
-				</div>
-				<div id="bar-chart-gender" style="max-width: 1000px; padding: 1% ; max-height: 500px;">
-					<h2 id="state-name"></h2>
-					<canvas id="stateChartDetails" ></canvas>
+			<div class="chart-container" id="chart-container">
+				<div id="overview-barchart" style="display: flex; gap: 20px; justify-content: center;">
+					<div style="flex: 1">
+						<h2 id="state-name"></h2>
+						<div class="filter">
+						  <label for="seasonFilter">Filter by Season:</label>
+						  <select id="seasonFilter">
+							<option value="All">All</option>
+							<option value="Spring">Spring</option>
+							<option value="Summer">Summer</option>
+							<option value="Fall">Fall</option>
+							<option value="Winter">Winter</option>
+						  </select>
+						</div>
+						<canvas id="stateChartDetails"></canvas>
+						<div id="top-colors" style="text-align: center">
+						</div>
+					  </div>
+					  <div style="flex: 1; text-align: center; max-height: 100; margin-top: 20;">
+						<canvas id="stateChartFrequency"></canvas>
+					  </div>
+					</div>
 				</div>
 			</div>
 		</div>

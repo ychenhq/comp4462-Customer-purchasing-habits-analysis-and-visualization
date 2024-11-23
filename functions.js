@@ -3,18 +3,31 @@ let rawData = null;
 let globalData = null;
 let chosenState = null;
 
+function viewSankeyChart(bool) {
+  const original = document.querySelectorAll(".chart-container-3d");
+  console.log(original);
+  original.forEach((section) => {
+    if (bool) section.classList.add("hidden");
+    else section.classList.remove("hidden");
+  });
+  const sections = document.querySelectorAll(".sankey-chart-container");
+  sections.forEach((section) => {
+    if (bool) section.classList.remove("hidden");
+    else section.classList.add("hidden");
+  });
+}
+
 function showContent(sectionId) {
   // Hide all content sections
   const sections = document.querySelectorAll(".content-section");
   sections.forEach((section) => {
     section.classList.add("hidden");
   });
-
-  // Show the selected content section
-  if (sectionId == "dataOverview") {
-    createOverviewVis();
-  }
-
+  //hide all items below
+  const filter = document.querySelectorAll(".chart-container");
+  filter.forEach((section) => {
+    section.classList.add("hidden");
+  });
   document.getElementById(sectionId).classList.remove("hidden");
 }
 
@@ -199,8 +212,63 @@ document.addEventListener("DOMContentLoaded", function () {
   loadAndPlot3D();
 });
 
+function showTopColors(data) {
+  // Count occurrences of each color
+  const colorCounts = {};
+  data.forEach((item) => {
+    const color = item.color;
+    colorCounts[color] = (colorCounts[color] || 0) + 1;
+  });
+
+  // Sort colors by frequency and get the top 5
+  const sortedColors = Object.keys(colorCounts).sort(
+    (a, b) => colorCounts[b] - colorCounts[a]
+  );
+  const topColors = sortedColors.slice(0, 5);
+
+  // Clear previous content in the "top-colors" div
+  const topColorsDiv = document.getElementById("top-colors");
+  topColorsDiv.innerHTML = "<h2>Top Color Preferences</h2>";
+
+  // Create and append circles for top colors
+  topColors.forEach((color) => {
+    const circle = document.createElement("div");
+    const label = document.createElement("p");
+
+    // Style the circle
+    circle.style.width = "50px";
+    circle.style.height = "50px";
+    circle.style.borderRadius = "50%";
+    circle.style.backgroundColor = colorMap[color] || "#CCCCCC"; // Use colorMap or fallback to gray
+    circle.style.display = "inline-block";
+    circle.style.margin = "10px";
+
+    // Add the label
+    label.innerText = `${color} (${colorCounts[color]})`;
+    label.style.textAlign = "center";
+    label.style.margin = "0";
+    label.style.fontSize = "14px";
+    label.style.color = "#000"; // Black text for labels
+
+    // Create a wrapper to align the circle and label
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "inline-block";
+    wrapper.style.textAlign = "center";
+    wrapper.style.margin = "10px";
+
+    wrapper.appendChild(circle);
+    wrapper.appendChild(label);
+
+    topColorsDiv.appendChild(wrapper);
+  });
+}
+
 // Handle state data
-function showStateData(stateAbbr, chartType = "gender") {
+function showStateData(stateAbbr) {
+  const filter = document.querySelectorAll(".chart-container");
+  filter.forEach((section) => {
+    section.classList.remove("hidden");
+  });
   console.log(stateCodeToName[chosenState]);
   if (stateAbbr != null) {
     chosenState = stateAbbr;
@@ -218,43 +286,56 @@ function showStateData(stateAbbr, chartType = "gender") {
     document.getElementById("chart-container").style.display = "block";
 
     const ctx = document.getElementById("stateChartDetails").getContext("2d");
+    const frequency = document
+      .getElementById("stateChartFrequency")
+      .getContext("2d");
 
     if (Chart.getChart("stateChartDetails") != undefined) {
       Chart.getChart("stateChartDetails").destroy();
     }
+    if (Chart.getChart("stateChartFrequency") != undefined) {
+      Chart.getChart("stateChartFrequency").destroy();
+    }
 
-    if (chartType == "gender") {
-      document.getElementById(
-        "state-name"
-      ).innerText = `Gender Distribution for Items Purchased in ${stateCodeToName[chosenState]}`;
+    document.getElementById(
+      "state-name"
+    ).innerText = `Top Items Purchased in ${stateCodeToName[chosenState]}`;
 
-      // Aggregate data for items purchased by gender
-      const genderItemCounts = {
-        Male: {},
-        Female: {},
-      };
+    // Aggregate data for gender and season
+    const seasonFilter = document.getElementById("seasonFilter");
+    const genderItemCounts = { Male: {}, Female: {} };
+    const seasonItemCounts = {};
 
-      // Count the frequency of each item purchased by gender
-      data.forEach((item) => {
-        const gender = item.gender || "Unknown";
-        const purchasedItem = item.item_purchased || "Unknown Item";
+    data.forEach((entry) => {
+      const { gender = "Unknown", item_purchased, season } = entry;
 
-        if (!genderItemCounts[gender]) {
-          genderItemCounts[gender] = {};
-        }
-        genderItemCounts[gender][purchasedItem] =
-          (genderItemCounts[gender][purchasedItem] || 0) + 1;
-      });
+      // Gender aggregation
+      if (!genderItemCounts[gender]) genderItemCounts[gender] = {};
+      genderItemCounts[gender][item_purchased] =
+        (genderItemCounts[gender][item_purchased] || 0) + 1;
 
-      // Extract item labels and corresponding data for males and females
-      const allItems = Array.from(
-        new Set(
-          Object.keys(genderItemCounts.Male || {}).concat(
-            Object.keys(genderItemCounts.Female || {})
-          )
-        )
-      );
+      // Season aggregation
+      if (!seasonItemCounts[item_purchased]) {
+        seasonItemCounts[item_purchased] = {
+          Spring: 0,
+          Summer: 0,
+          Fall: 0,
+          Winter: 0,
+        };
+      }
+      seasonItemCounts[item_purchased][season] += 1;
+    });
 
+    // Extract all unique items
+    const allItems = Array.from(
+      new Set(
+        Object.keys(genderItemCounts.Male || {})
+          .concat(Object.keys(genderItemCounts.Female || {}))
+          .concat(Object.keys(seasonItemCounts))
+      )
+    );
+
+    function updateChart(season) {
       const maleItemCounts = allItems.map(
         (item) => genderItemCounts.Male[item] || 0
       );
@@ -262,29 +343,56 @@ function showStateData(stateAbbr, chartType = "gender") {
         (item) => genderItemCounts.Female[item] || 0
       );
 
-      // Create the bar chart with items on the x-axis
+      let filteredSeasonCounts = {};
+      if (season !== "All") {
+        filteredSeasonCounts = allItems.map(
+          (item) => seasonItemCounts[item][season] || 0
+        );
+      }
+      const datasets = [
+        {
+          label: "Male",
+          data: maleItemCounts,
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
+        },
+        {
+          label: "Female",
+          data: femaleItemCounts,
+          backgroundColor: "rgba(255, 99, 132, 0.6)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1,
+        },
+      ];
+
+      if (season !== "All") {
+        datasets.push({
+          label: `${season}`,
+          data: filteredSeasonCounts,
+          backgroundColor: {
+            Spring: "#77DD77",
+            Summer: "#FFB347",
+            Fall: "#FF6961",
+            Winter: "#AEC6CF",
+          }[season], // Use consistent hues for seasons
+          borderColor: "#000",
+          borderWidth: 1,
+          stack: "Season",
+        });
+      }
+      if (Chart.getChart("stateChartDetails") != undefined) {
+        Chart.getChart("stateChartDetails").destroy();
+      }
+
       new Chart(ctx, {
         type: "bar",
         data: {
           labels: allItems, // Items purchased
-          datasets: [
-            {
-              label: "Male",
-              data: maleItemCounts,
-              backgroundColor: "rgba(54, 162, 235, 0.6)",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 1,
-            },
-            {
-              label: "Female",
-              data: femaleItemCounts,
-              backgroundColor: "rgba(255, 99, 132, 0.6)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 1,
-            },
-          ],
+          datasets: datasets,
         },
         options: {
+          indexAxis: "y", // Horizontal bar chart
           responsive: true,
           plugins: {
             legend: {
@@ -293,199 +401,131 @@ function showStateData(stateAbbr, chartType = "gender") {
           },
           scales: {
             x: {
+              stacked: true, // Enable stacking on the x-axis
+              title: {
+                display: true,
+                text: "Amount",
+              },
+              beginAtZero: true,
+            },
+            y: {
+              stacked: true, // Enable stacking on the y-axis
               title: {
                 display: true,
                 text: "Items Purchased",
               },
-              ticks: {
-                autoSkip: false, // Prevent skipping of item labels
-                maxRotation: 90,
-                minRotation: 70,
-              },
-            },
-            y: {
-              title: {
-                display: true,
-                text: "Frequency",
-              },
-              beginAtZero: true,
-            },
-          },
-        },
-      });
-    } else if (chartType == "color") {
-      // console.log("printing color");
-      document.getElementById(
-        "state-name"
-      ).innerText = `Top Color Preferences in ${stateCodeToName[chosenState]}`;
-      const colorCounts = {};
-
-      // Count occurrences of each color
-      data.forEach((item) => {
-        const color = item.color;
-        colorCounts[color] = (colorCounts[color] || 0) + 1;
-      });
-
-      // Sort colors by frequency
-      const sortedColors = Object.keys(colorCounts).sort(
-        (a, b) => colorCounts[b] - colorCounts[a]
-      );
-      const sortedCounts = sortedColors.map((color) => colorCounts[color]);
-      const colorPalette = sortedColors.map(
-        (color) => colorMap[color] || "#CCCCCC"
-      ); // Default to gray if color is not found
-
-      // Generate the Chart.js bar chart
-      new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: sortedColors,
-          datasets: [
-            {
-              label: `Color Preferences in ${chosenState}`,
-              data: sortedCounts,
-              backgroundColor: colorPalette,
-              borderColor: colorPalette.map((color) =>
-                color.replace("0.6", "1")
-              ), // Darker border
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  return `${context.label}: ${context.raw}`;
-                },
-              },
-            },
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: "Color",
-              },
-              ticks: {
-                autoSkip: false,
-                maxRotation: 45,
-                minRotation: 45,
-              },
-            },
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: "Count",
-              },
-            },
-          },
-        },
-      });
-    } else if ((chartType = "frequency")) {
-      document.getElementById(
-        "state-name"
-      ).innerText = `Purchase Frequencies in ${stateCodeToName[chosenState]}`;
-
-      const frequencyCounts = {};
-
-      // Build frequencyCounts with additional details
-      data.forEach((item) => {
-        const frequency = item.frequency_of_purchases;
-        const category = item.category || "Unknown Category";
-        const itemPurchased = item.item_purchased || "Unknown Item";
-
-        if (frequency) {
-          if (!frequencyCounts[frequency]) {
-            frequencyCounts[frequency] = {
-              count: 0,
-              categories: new Set(),
-              items: new Set(),
-            };
-          }
-          frequencyCounts[frequency].count++;
-          frequencyCounts[frequency].categories.add(category);
-          frequencyCounts[frequency].items.add(itemPurchased);
-        }
-      });
-
-      // Prepare data for the chart
-      const labels = Object.keys(frequencyCounts).map(
-        (freq) => frequencyLabels[freq]
-      );
-      const dataCounts = Object.values(frequencyCounts).map(
-        (entry) => entry.count
-      );
-
-      new Chart(ctx, {
-        type: "polarArea",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Purchase Frequency",
-              data: dataCounts,
-              backgroundColor: [
-                "#003049",
-                "#d62828",
-                "#f77f00",
-                "#fcbf49",
-                "#eae2b7",
-                "#2a9d8f",
-                "#6a4c93",
-              ],
-              borderColor: "#ffffff",
-              borderWidth: 2,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scale: {
-            ticks: {
-              beginAtZero: true,
-              display: false,
-            },
-            gridLines: {
-              display: false,
-            },
-          },
-          plugins: {
-            tooltip: {
-              callbacks: {
-                label: function (tooltipItem) {
-                  const frequency = labels[tooltipItem.dataIndex];
-                  const entry = frequencyCounts[frequency];
-                  const total = dataCounts.reduce((acc, val) => acc + val, 0);
-                  const percentage =
-                    ((tooltipItem.raw / total) * 100).toFixed(1) + "%";
-
-                  // Format category and items
-                  const categories = Array.from(entry.categories).join(", ");
-                  const items = Array.from(entry.items).join(", ");
-
-                  return [
-                    `${tooltipItem.label}: ${percentage}`,
-                    `Count: ${entry.count}`,
-                    `Categories: ${categories}`,
-                    `Items: ${items}`,
-                  ];
-                },
-              },
-            },
-            legend: {
-              position: "top",
             },
           },
         },
       });
     }
+
+    // Initial chart load
+    updateChart("All");
+
+    // Add event listener for season filter
+    seasonFilter.addEventListener("change", (event) => {
+      const selectedSeason = event.target.value;
+      updateChart(selectedSeason);
+    });
+    showTopColors(data);
+    //Now add the frequency chart
+    document.getElementById(
+      "state-name"
+    ).innerText = `Purchase Frequencies in ${stateCodeToName[chosenState]}`;
+
+    const frequencyCounts = {};
+
+    // Build frequencyCounts with additional details
+    data.forEach((item) => {
+      const frequency = item.frequency_of_purchases;
+      const category = item.category || "Unknown Category";
+      const itemPurchased = item.item_purchased || "Unknown Item";
+
+      if (frequency) {
+        if (!frequencyCounts[frequency]) {
+          frequencyCounts[frequency] = {
+            count: 0,
+            categories: new Set(),
+            items: new Set(),
+          };
+        }
+        frequencyCounts[frequency].count++;
+        frequencyCounts[frequency].categories.add(category);
+        frequencyCounts[frequency].items.add(itemPurchased);
+      }
+    });
+
+    // Prepare data for the chart
+    const labels = Object.keys(frequencyCounts).map(
+      (freq) => frequencyLabels[freq]
+    );
+    const dataCounts = Object.values(frequencyCounts).map(
+      (entry) => entry.count
+    );
+
+    new Chart(frequency, {
+      type: "polarArea",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Purchase Frequency",
+            data: dataCounts,
+            backgroundColor: [
+              "#003049",
+              "#d62828",
+              "#f77f00",
+              "#fcbf49",
+              "#eae2b7",
+              "#2a9d8f",
+              "#6a4c93",
+            ],
+            borderColor: "#ffffff",
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scale: {
+          ticks: {
+            beginAtZero: true,
+            display: false,
+          },
+          gridLines: {
+            display: false,
+          },
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                const frequency = labels[tooltipItem.dataIndex];
+                const entry = frequencyCounts[frequency];
+                const total = dataCounts.reduce((acc, val) => acc + val, 0);
+                const percentage =
+                  ((tooltipItem.raw / total) * 100).toFixed(1) + "%";
+
+                // Format category and items
+                const categories = Array.from(entry.categories).join(", ");
+                const items = Array.from(entry.items).join(", ");
+
+                return [
+                  `${tooltipItem.label}: ${percentage}`,
+                  `Count: ${entry.count}`,
+                  `Categories: ${categories}`,
+                  `Items: ${items}`,
+                ];
+              },
+            },
+          },
+          legend: {
+            position: "top",
+          },
+        },
+      },
+    });
 
     // Scroll down to the chart container
     document

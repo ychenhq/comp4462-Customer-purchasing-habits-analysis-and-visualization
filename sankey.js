@@ -9,6 +9,7 @@ function SankeyChart(
     width = 1000,
     height = 1000,
     colors = d3.schemeTableau10,
+    colorMap = {}, // Pass the colorMap here
   } = {}
 ) {
   const aggregatedLinks = Array.from(
@@ -30,10 +31,8 @@ function SankeyChart(
     );
   }
 
-  const color = d3.scaleOrdinal(
-    nodes.map((d) => d.id),
-    colors
-  );
+  // Custom color function
+  const getColor = (id) => colorMap[id] || d3.scaleOrdinal(colors)(id);
 
   // Sankey layout
   const sankey = d3
@@ -68,7 +67,7 @@ function SankeyChart(
     .attr("y", (d) => d.y0)
     .attr("height", (d) => d.y1 - d.y0)
     .attr("width", (d) => d.x1 - d.x0)
-    .attr("fill", (d) => color(d.id))
+    .attr("fill", (d) => getColor(d.id)) // Use custom color function
     .append("title")
     .text((d) => `${d.id}\n${d3.format(format)(d.value)}`);
 
@@ -81,7 +80,7 @@ function SankeyChart(
     .join("path")
     .attr("d", d3.sankeyLinkHorizontal())
     .attr("stroke-width", (d) => Math.max(1, d.width))
-    .attr("stroke", (d) => color(d.source.id))
+    .attr("stroke", (d) => getColor(d.source.id)) // Use source color for links
     .attr("opacity", 0.7)
     .append("title")
     .text(
@@ -109,7 +108,7 @@ function SankeyChart(
 async function createSankeyChart() {
   // Filter and clean the data
   const filteredData = rawData.filter(
-    (row) => row.item_purchased && row.color && row.category && row.season
+    (row) => row.color && row.category && row.season
   );
 
   // Create nodes and links
@@ -123,16 +122,14 @@ async function createSankeyChart() {
   };
 
   filteredData.forEach((row) => {
-    const { item_purchased, color, category, season } = row;
+    const { color, category, season } = row;
 
     // Add nodes
-    addNode(item_purchased);
     addNode(color);
     addNode(category);
     addNode(season);
 
     // Add links
-    links.push({ source: item_purchased, target: color, value: 1 });
     links.push({ source: color, target: category, value: 1 });
     links.push({ source: category, target: season, value: 1 });
   });
@@ -146,6 +143,7 @@ async function createSankeyChart() {
       nodeWidth: 20,
       nodePadding: 15,
       align: "justify", // Options: "left", "right", "justify", or "center"
+      colorMap: colorMap,
     }
   );
 
