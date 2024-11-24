@@ -10,13 +10,13 @@
 	<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-	<script src="constants.js"></script>
-    <script src="mapdata.js"></script>
-	<!--<script src="ridgeline.js"></script>-->
-    <script src="usmap.js"></script>
-	<script src="3D.js"></script>
-	<script src="sankey.js"></script>
-	<script src="functions.js"></script>
+	<script src="functions/constants.js"></script>
+    <script src="functions/mapdata.js"></script>
+	<!--<script src="functions/ridgeline.js"></script>-->
+    <script src="functions/usmap.js"></script>
+	<script src="functions/3D.js"></script>
+	<script src="functions/sankey.js"></script>
+	<script src="functions/functions.js"></script>
   </head>
 	<body>
 		<div class="main-container">
@@ -43,38 +43,54 @@
 					</div>
 				
 					<div id="dataOverview" class="content-section">
-						<h2>Data Analysis</h2>
-						<div class="chart-container-3d" style="display: flex; flex-direction: row;">
-							<div id="3dCluster" style=" max-height: 600px;"></div>
-							<!-- Text Box for Cluster Details -->
-							<div style="max-height: 90%; overflow-y: auto; padding: 15px; font-size: 16px;">
-							<h3>Cluster Details</h3>
-							<p>
-								The dataset shows that certain features dominate within clusters, with notable differences primarily in gender, color preferences, subscription status, and purchasing patterns. While the clusters share similarities, distinctions emerge in lifestyle and purchasing behavior.
-							</p>
-							<ul>
-								<li><b>Cluster 0:</b> Middle-aged individuals (avg. age ~44), predominantly male, prefer clothing and black items, frequent promo codes, “Next Day Air” shipping, quarterly purchases, $58.92 per purchase, avg. review rating: 3.73.</li>
-								<li><b>Cluster 1:</b> Middle-aged individuals (avg. age ~44), predominantly female, prefer clothing and charcoal items, no discounts, “Express” shipping, monthly purchases, $59.98 per purchase, avg. review rating: 3.78.</li>
-								<li><b>Cluster 2:</b> Slightly older individuals (avg. age ~44.2), predominantly male, are subscribers, prefer gold items, use discounts, “Express” shipping, annual purchases, $59.49 per purchase, avg. review rating: 3.74.</li>
-								<li><b>Cluster 3:</b> Middle-aged individuals (avg. age ~44), predominantly female, not subscribers, prefer violet items, no discounts, “Free Shipping”, bi-weekly purchases, $60.25 per purchase, avg. review rating: 3.74.</li>
-							</ul>
-							<p>
-								<b>Summary:</b> Clusters 0 and 1 (~70%) reflect frequent customers in their mid-40s, differing in gender and shipping preferences. Clusters 2 and 3 (~30%) reveal specialized subscription and shipping behaviors, suggesting potential for targeted campaigns.
-							</p>
-							<button id="chart-button" onclick="viewSankeyChart(true)">
-								View Sankey Chart
-							</button>
+						<div class="chart-container-3d" >
+							<h2>Data Analysis</h2>
+							<div style="display: flex; flex-direction: row;">
+								<div id="3dCluster" style=" max-height: 600px;"></div>
+								<!-- Text Box for Cluster Details -->
+								<div style="max-height: 90%; overflow-y: auto; padding: 15px; font-size: 16px;">
+								<h3>Cluster Details</h3>
+								<p>
+									The dataset shows that certain features dominate within clusters, with notable differences primarily in gender, color preferences, subscription status, and purchasing patterns. While the clusters share similarities, distinctions emerge in lifestyle and purchasing behavior.
+								</p>
+								<ul>
+									<li><b>Cluster 0:</b> Middle-aged individuals (avg. age ~44), predominantly male, prefer clothing and black items, frequent promo codes, “Next Day Air” shipping, quarterly purchases, $58.92 per purchase, avg. review rating: 3.73.</li>
+									<li><b>Cluster 1:</b> Middle-aged individuals (avg. age ~44), predominantly female, prefer clothing and charcoal items, no discounts, “Express” shipping, monthly purchases, $59.98 per purchase, avg. review rating: 3.78.</li>
+									<li><b>Cluster 2:</b> Slightly older individuals (avg. age ~44.2), predominantly male, are subscribers, prefer gold items, use discounts, “Express” shipping, annual purchases, $59.49 per purchase, avg. review rating: 3.74.</li>
+									<li><b>Cluster 3:</b> Middle-aged individuals (avg. age ~44), predominantly female, not subscribers, prefer violet items, no discounts, “Free Shipping,” bi-weekly purchases, $60.25 per purchase, avg. review rating: 3.74.</li>
+								</ul>
+								<p>
+									<b>Summary:</b> Clusters 0 and 1 (~70%) reflect frequent customers in their mid-40s, differing in gender and shipping preferences. Clusters 2 and 3 (~30%) reveal specialized subscription and shipping behaviors, suggesting potential for targeted campaigns.
+								</p>
+								<button id="chart-button" onclick="viewSankeyChart(true)">
+									View Sankey Chart
+								</button>
+								</div>
 							</div>
 						</div>
+						
 						<div class="sankey-chart-container hidden">
+							<h2>Sankey Chart</h2>
 							<div style="display: flex; flex-direction: row;">
 								<div id="sankey-chart"></div>
-								<h2>Sankey Chart</h2>
-								<button id="chart-button" onclick="viewSankeyChart(false)">
-									Back
-								</button>
+								<div class="sankey-chart-description" style="padding: 20px; font-size: 16px; line-height: 1.5;">
+									<h3>Sankey Chart Description</h3>
+									<p>
+									  The Sankey chart illustrates the flow of customer preferences across various product categories and colors. 
+									  The data shows that <b>color preferences</b> are equally distributed among <b>20 distinct colors</b>, 
+									  indicating a diverse and balanced selection across the dataset.
+									</p>
+									<p>
+									  The chart also highlights that <b>clothing</b> and <b>accessories</b> are the most purchased items, 
+									  demonstrating their prominence in customer buying patterns. These categories receive the majority of 
+									  connections from different color preferences, suggesting that customers have a wide range of aesthetic 
+									  choices while focusing their purchases primarily on these two product types.
+									</p>
+									<button id="chart-button" onclick="viewSankeyChart(false)">
+										Back
+									</button>
+								  </div>
 							</div>
-							
 						</div>
 					</div>
 				</div>
@@ -82,9 +98,9 @@
 			</div>
 			 <!-- Container for the chart -->
 			<div class="chart-container" id="chart-container">
+				<h2 id="state-name"></h2>
 				<div id="overview-barchart" style="display: flex; gap: 20px; justify-content: center;">
 					<div style="flex: 1">
-						<h2 id="state-name"></h2>
 						<div class="filter">
 						  <label for="seasonFilter">Filter by Season:</label>
 						  <select id="seasonFilter">
@@ -99,7 +115,7 @@
 						<div id="top-colors" style="text-align: center">
 						</div>
 					  </div>
-					  <div style="flex: 1; text-align: center; max-height: 100; margin-top: 20;">
+					  <div style="flex: 1; text-align: center; max-height: 500px; margin-top: 20;">
 						<canvas id="stateChartFrequency"></canvas>
 					  </div>
 					</div>
