@@ -1,0 +1,5 @@
+cluster,customer_id,age,gender,item_purchased,category,purchase_amount,location,size,color,season,review_rating,subscription_status,shipping_type,discount_applied,promo_code_used,previous_purchases,payment_method,frequency_of_purchases,PCA1,PCA2,PCA3
+0,0.555014106181072,44.01538461538462,Male,Belt,Accessories,59.97846153846154,Alabama,S,Beige,Fall,3.7785641025641024,No,2-Day Shipping,No,No,25.645128205128202,Bank Transfer,Annually,-0.4785619968405999,0.0938329041050916,0.509233445203405
+1,0.3499615285970761,44.0,Male,Belt,Accessories,58.919871794871796,Alabama,S,Black,Spring,3.7349358974358973,No,Express,Yes,Yes,25.16666666666666,Cash,Bi-Weekly,0.6702599066936029,0.0788832475299275,0.2128961860992578
+2,0.1349063862528852,44.23076923076923,Male,Belt,Accessories,59.49192782526116,Alabama,S,Black,Fall,3.742450142450142,Yes,Express,Yes,Yes,26.084520417853746,Cash,Annually,1.0915962034498847,-0.0568165035688538,-0.1951274400572598
+3,0.8400872018466273,44.00721153846155,Female,Belt,Accessories,60.24919871794872,Alabama,S,Black,Fall,3.741426282051282,No,2-Day Shipping,No,No,24.596153846153843,Cash,Annually,-0.8822876899759233,-0.0648096552108466,-0.3396479445664762
