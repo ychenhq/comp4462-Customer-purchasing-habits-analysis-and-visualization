@@ -212,12 +212,18 @@ document.addEventListener("DOMContentLoaded", function () {
   loadAndPlot3D();
 });
 
-function showTopColors(data) {
+function showTopColors(data, season = "All") {
   // Count occurrences of each color
   const colorCounts = {};
+
   data.forEach((item) => {
     const color = item.color;
-    colorCounts[color] = (colorCounts[color] || 0) + 1;
+    const itemSeason = item.season;
+
+    // Filter by season if needed
+    if (season === "All" || itemSeason === season) {
+      colorCounts[color] = (colorCounts[color] || 0) + 1;
+    }
   });
 
   // Sort colors by frequency and get the top 5
@@ -264,12 +270,13 @@ function showTopColors(data) {
 }
 
 // Handle state data
+
 function showStateData(stateAbbr) {
   const filter = document.querySelectorAll(".chart-container");
   filter.forEach((section) => {
     section.classList.remove("hidden");
   });
-  console.log(stateCodeToName[chosenState]);
+
   if (stateAbbr != null) {
     chosenState = stateAbbr;
   }
@@ -279,30 +286,20 @@ function showStateData(stateAbbr) {
   if (chosenState == null) {
     chosenState = stateAbbr;
   }
+
   const data = globalData[stateCodeToName[chosenState]];
   if (data) {
-    console.log("visualizing data");
-    // Display the chart container
     document.getElementById("chart-container").style.display = "block";
-
     const ctx = document.getElementById("stateChartDetails").getContext("2d");
     const frequency = document
       .getElementById("stateChartFrequency")
       .getContext("2d");
-
-    if (Chart.getChart("stateChartDetails") != undefined) {
-      Chart.getChart("stateChartDetails").destroy();
-    }
-    if (Chart.getChart("stateChartFrequency") != undefined) {
-      Chart.getChart("stateChartFrequency").destroy();
-    }
 
     document.getElementById(
       "state-name"
     ).innerText = `Top Items Purchased in ${stateCodeToName[chosenState]}`;
 
     // Aggregate data for gender and season
-    const seasonFilter = document.getElementById("seasonFilter");
     const genderItemCounts = { Male: {}, Female: {} };
     const seasonItemCounts = {};
 
@@ -336,6 +333,12 @@ function showStateData(stateAbbr) {
     );
 
     function updateChart(season) {
+      if (Chart.getChart("stateChartDetails") != undefined) {
+        Chart.getChart("stateChartDetails").destroy();
+      }
+      if (Chart.getChart("stateChartFrequency") != undefined) {
+        Chart.getChart("stateChartFrequency").destroy();
+      }
       const maleItemCounts = allItems.map(
         (item) => genderItemCounts.Male[item] || 0
       );
@@ -343,80 +346,100 @@ function showStateData(stateAbbr) {
         (item) => genderItemCounts.Female[item] || 0
       );
 
-      let filteredSeasonCounts = {};
-      if (season !== "All") {
-        filteredSeasonCounts = allItems.map(
-          (item) => seasonItemCounts[item][season] || 0
-        );
-      }
+      let filteredSeasonCounts = allItems.map((item) =>
+        season !== "All" ? seasonItemCounts[item][season] || 0 : 0
+      );
+
       const datasets = [
         {
           label: "Male",
           data: maleItemCounts,
           backgroundColor: "rgba(54, 162, 235, 0.6)",
-          borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 1,
         },
         {
           label: "Female",
           data: femaleItemCounts,
           backgroundColor: "rgba(255, 99, 132, 0.6)",
-          borderColor: "rgba(255, 99, 132, 1)",
-          borderWidth: 1,
         },
       ];
 
       if (season !== "All") {
         datasets.push({
-          label: `${season}`,
+          label: season,
           data: filteredSeasonCounts,
           backgroundColor: {
             Spring: "#77DD77",
             Summer: "#FFB347",
             Fall: "#FF6961",
             Winter: "#AEC6CF",
-          }[season], // Use consistent hues for seasons
-          borderColor: "#000",
-          borderWidth: 1,
-          stack: "Season",
+          }[season],
         });
       }
-      if (Chart.getChart("stateChartDetails") != undefined) {
-        Chart.getChart("stateChartDetails").destroy();
-      }
 
+      // Update bar chart
       new Chart(ctx, {
         type: "bar",
         data: {
-          labels: allItems, // Items purchased
+          labels: allItems,
           datasets: datasets,
         },
         options: {
-          indexAxis: "y", // Horizontal bar chart
           responsive: true,
-          plugins: {
-            legend: {
-              position: "top",
-            },
-          },
           scales: {
-            x: {
-              stacked: true, // Enable stacking on the x-axis
-              title: {
-                display: true,
-                text: "Amount",
-              },
-              beginAtZero: true,
-            },
-            y: {
-              stacked: true, // Enable stacking on the y-axis
-              title: {
-                display: true,
-                text: "Items Purchased",
-              },
-            },
+            x: { stacked: true },
+            y: { stacked: true },
           },
         },
+      });
+
+      // Update top colors
+      showTopColors(data, season);
+
+      // Update purchase frequency chart
+      updateFrequencyChart(data, season);
+
+      // Scroll down to the chart container
+      document
+        .getElementById("chart-container")
+        .scrollIntoView({ behavior: "smooth" });
+    }
+
+    function updateFrequencyChart(data, season) {
+      const frequencyCounts = {};
+
+      data.forEach((item) => {
+        if (season !== "All" && item.season !== season) return;
+        const frequency = item.frequency_of_purchases;
+        if (!frequencyCounts[frequency]) {
+          frequencyCounts[frequency] = 0;
+        }
+        frequencyCounts[frequency]++;
+      });
+
+      const labels = Object.keys(frequencyCounts);
+      const counts = Object.values(frequencyCounts);
+
+      new Chart(frequency, {
+        type: "polarArea",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Purchase Frequency",
+              data: counts,
+              backgroundColor: [
+                "#003049",
+                "#d62828",
+                "#f77f00",
+                "#fcbf49",
+                "#eae2b7",
+                "#2a9d8f",
+                "#6a4c93",
+              ],
+            },
+          ],
+        },
+        options: { responsive: true },
       });
     }
 
@@ -424,112 +447,8 @@ function showStateData(stateAbbr) {
     updateChart("All");
 
     // Add event listener for season filter
-    seasonFilter.addEventListener("change", (event) => {
-      const selectedSeason = event.target.value;
-      updateChart(selectedSeason);
+    document.getElementById("seasonFilter").addEventListener("change", (e) => {
+      updateChart(e.target.value);
     });
-    showTopColors(data);
-    //Now add the frequency chart
-    document.getElementById(
-      "state-name"
-    ).innerText = `Purchase Frequencies in ${stateCodeToName[chosenState]}`;
-
-    const frequencyCounts = {};
-
-    // Build frequencyCounts with additional details
-    data.forEach((item) => {
-      const frequency = item.frequency_of_purchases;
-      const category = item.category || "Unknown Category";
-      const itemPurchased = item.item_purchased || "Unknown Item";
-
-      if (frequency) {
-        if (!frequencyCounts[frequency]) {
-          frequencyCounts[frequency] = {
-            count: 0,
-            categories: new Set(),
-            items: new Set(),
-          };
-        }
-        frequencyCounts[frequency].count++;
-        frequencyCounts[frequency].categories.add(category);
-        frequencyCounts[frequency].items.add(itemPurchased);
-      }
-    });
-
-    // Prepare data for the chart
-    const labels = Object.keys(frequencyCounts).map(
-      (freq) => frequencyLabels[freq]
-    );
-    const dataCounts = Object.values(frequencyCounts).map(
-      (entry) => entry.count
-    );
-
-    new Chart(frequency, {
-      type: "polarArea",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Purchase Frequency",
-            data: dataCounts,
-            backgroundColor: [
-              "#003049",
-              "#d62828",
-              "#f77f00",
-              "#fcbf49",
-              "#eae2b7",
-              "#2a9d8f",
-              "#6a4c93",
-            ],
-            borderColor: "#ffffff",
-            borderWidth: 2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scale: {
-          ticks: {
-            beginAtZero: true,
-            display: false,
-          },
-          gridLines: {
-            display: false,
-          },
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function (tooltipItem) {
-                const frequency = labels[tooltipItem.dataIndex];
-                const entry = frequencyCounts[frequency];
-                const total = dataCounts.reduce((acc, val) => acc + val, 0);
-                const percentage =
-                  ((tooltipItem.raw / total) * 100).toFixed(1) + "%";
-
-                // Format category and items
-                const categories = Array.from(entry.categories).join(", ");
-                const items = Array.from(entry.items).join(", ");
-
-                return [
-                  `${tooltipItem.label}: ${percentage}`,
-                  `Count: ${entry.count}`,
-                  `Categories: ${categories}`,
-                  `Items: ${items}`,
-                ];
-              },
-            },
-          },
-          legend: {
-            position: "top",
-          },
-        },
-      },
-    });
-
-    // Scroll down to the chart container
-    document
-      .getElementById("chart-container")
-      .scrollIntoView({ behavior: "smooth" });
   }
 }
