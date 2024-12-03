@@ -1,55 +1,58 @@
+
 # Customer Purchasing Behaviors Analysis
 
 ## Overview
-This project explores and visualizes customer purchasing behaviors based on a Kaggle dataset. The initial data analysis is enhanced by combining the data with an additional dataset on customer age demographics. The goal is to identify key trends, segment customers, and gain insights about factors influencing purchasing habits.
+This project explores and visualizes customer purchasing behaviors based on a Kaggle dataset. The initial data analysis is enhanced by combining it with an additional dataset adding several new fields and more precision on some existing fields. The goal is to identify key trends, segment customers, and gain insights about factors influencing purchasing habits.
 
 ## Datasets
 
 ### Primary Dataset
 [Customer Purchasing Behaviors Dataset](https://www.kaggle.com/datasets/hanaksoy/customer-purchasing-behaviors): Contains data on customer demographics, income, purchase frequency, loyalty scores, and purchase amounts. Key fields include:
-Age: Customer age group
-Region: Customer's regional segment
-Annual Income: Customer’s yearly income
-Purchase Frequency: How often purchases are made
-Loyalty Score: Customer loyalty metric
-Purchase Amount: Amount spent per purchase
+- Age: Customer age group
+- Region: Customer's regional segment
+- Annual Income: Customer’s yearly income
+- Purchase Frequency: How often purchases are made
+- Loyalty Score: Customer loyalty metric
+- Purchase Amount: Amount spent per purchase
+
 ### Enhancement Dataset
-[Customer Shopping Trends Dataset](https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset): This dataset provides additional insights into customer age demographics, allowing us to refine our segmentation and conduct age-based analyses.
+[Customer Shopping Trends Dataset](https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset): This dataset provides additional fields of data about customer demographics and similar fields with more precise information, allowing us to refine our segmentation and analyses.
 
 
 ## Project Workflow
 1. Data Visualization
-   - Initial visualizations helped uncover patterns and trends in purchasing behaviors:
 
-   - ***Scatter plot***: Displays the demographics for age, income distributions as to purchase amount.
-    ![age_to_income](https://github.com/ychenhq/comp4471/blob/main/images/age_to_income.png)
-
-
-   - ***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
-    ![loyalty_to_age](https://github.com/ychenhq/comp4471/blob/main/images/loyalty_to_age.png)
-
-   - These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
+- Initial visualizations helped uncover patterns and trends in purchasing behaviors:
+ - ***Scatter plot***: Displays the demographics for age, income distributions as to purchase amount.
+![age_to_income](https://github.com/ychenhq/comp4471/blob/main/images/age_to_income.png)
+ - ***Loyalty Trends***: Heatmaps to highlight age with loyalty patterns.
+![loyalty_to_age](https://github.com/ychenhq/comp4471/blob/main/images/loyalty_to_age.png)
+ - These visualizations provided a preliminary understanding of customer segments and potential factors influencing purchases.
 
 2. Data Enhancement
 To gain further insights, we merged the primary dataset with age-based data:
 
-   - ***Enhanced Age Segmentation***: Enabled a more detailed analysis of purchasing trends across different age groups.The enlarged dataset improved understanding of age-specific behaviors, combining with data that includes more fields such as:
-      Location: 1 of the 55 states
-      Category: Footwear, Clothing etc.
-      Season: Spring, Summer, Fall, Winter
-      Color: Color of the item purchased
-      Item Purchased: Jeans, Glasses, Sweater, Blouse etc.
+- ***Enhanced Age Segmentation***: Enabled a more detailed analysis of purchasing trends across different age groups.The enlarged dataset improved our behaviour analysis, combining data that include fields such as:
+ - Location: 1 of the 55 states
+ - Category: Footwear, Clothing etc.
+ - Season: Spring, Summer, Fall, Winter
+ - Color: Color of the item purchased
+ - Item Purchased: Jeans, Glasses, Sweater, Blouse etc.
 
-   - ***Enhanced Visualizations***: With geopgrahic location, we can expand the visualization with geographs. Along with age data, we visualized age-income correlations, loyalty score distributions, gender and purchasing habits across different states.
+- ***Enhanced Visualizations***: With more precise geographic location, we can expand the visualization with a choropleth map. We can present an overall view over the whole country, as well as refined views for each state, using different charts to show the purchasing trends accross seasons.
 
 4. Advanced Visualization and Insights
-   - The combined data enabled us to produce more granular insights in ***Age-Income Correlations***, it provides better analysis of income levels and purchasing trends by age group.
+- The combined data enabled us to produce more granular insights, it provides better analysis of location and purchasing trends by age group.
 
 
 # Key Findings
 ***Income and Frequency Correlation***: Positive correlation in certain age groups between income and purchase frequency.
+
 ***Regional Trends by Age***: Insights into regional shopping patterns for different age demographics.
-Loyalty Scores by Age Group: Differences in brand loyalty scores based on age, indicating age-related tendencies in customer loyalty.
+
+***High-Intensity States***: Strong customer engagement and high purchase amounts reflect loyalty and familiarity.
+
+***Low-Intensity States***: Lower engagement suggests untapped potential or market challenges.
 
 # Conclusion
 This project provides an in-depth visualzation of customer purchasing behaviors by merging 2 datasets for comprehensive data analysis. The visualization dataset can guide marketing strategies and improve customer targeting.
@@ -84,5 +87,4 @@ Install required libraries:
 
 Open Customer_Purchasing_Analysis.ipynb in Jupyter Notebook.
 
-Run each cell to load, visualize, and analyze the data.
-
+Run each cell to load, visualize, and analyze the data.# Customer Purchasing Behaviors Analysis
