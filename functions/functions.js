@@ -339,17 +339,25 @@ function showStateData(stateAbbr) {
       if (Chart.getChart("stateChartFrequency") != undefined) {
         Chart.getChart("stateChartFrequency").destroy();
       }
-      const maleItemCounts = allItems.map(
-        (item) => genderItemCounts.Male[item] || 0
-      );
-      const femaleItemCounts = allItems.map(
-        (item) => genderItemCounts.Female[item] || 0
-      );
-
-      let filteredSeasonCounts = allItems.map((item) =>
-        season !== "All" ? seasonItemCounts[item][season] || 0 : 0
-      );
-
+    
+      // Prepare item counts for male and female, by season
+      const maleItemCounts = allItems.map((item) => {
+        if (season === "All") {
+          return genderItemCounts.Male[item] || 0; // Total male count for the item
+        } else {
+          return data.filter(entry => entry.gender === "Male" && entry.item_purchased === item && entry.season === season).length; // Male count for selected season
+        }
+      });
+    
+      const femaleItemCounts = allItems.map((item) => {
+        if (season === "All") {
+          return genderItemCounts.Female[item] || 0; // Total female count for the item
+        } else {
+          return data.filter(entry => entry.gender === "Female" && entry.item_purchased === item && entry.season === season).length; // Female count for selected season
+        }
+      });
+    
+      // Create the dataset for each gender, depending on the season
       const datasets = [
         {
           label: "Male",
@@ -362,21 +370,8 @@ function showStateData(stateAbbr) {
           backgroundColor: "rgba(255, 99, 132, 0.6)",
         },
       ];
-
-      if (season !== "All") {
-        datasets.push({
-          label: season,
-          data: filteredSeasonCounts,
-          backgroundColor: {
-            Spring: "#77DD77",
-            Summer: "#FFB347",
-            Fall: "#FF6961",
-            Winter: "#AEC6CF",
-          }[season],
-        });
-      }
-
-      // Update bar chart
+    
+      // Update the bar chart
       new Chart(ctx, {
         type: "bar",
         data: {
@@ -386,24 +381,28 @@ function showStateData(stateAbbr) {
         options: {
           responsive: true,
           scales: {
-            x: { stacked: true },
-            y: { stacked: true },
+            x: {
+              stacked: false, // Disable stacking to separate each gender
+            },
+            y: {
+              stacked: false, // Disable stacking on the y-axis as well
+            },
           },
         },
       });
-
+    
       // Update top colors
       showTopColors(data, season);
-
+    
       // Update purchase frequency chart
       updateFrequencyChart(data, season);
-
+    
       // Scroll down to the chart container
       document
         .getElementById("chart-container")
         .scrollIntoView({ behavior: "smooth" });
     }
-
+    
     function updateFrequencyChart(data, season) {
       const frequencyCounts = {};
 
