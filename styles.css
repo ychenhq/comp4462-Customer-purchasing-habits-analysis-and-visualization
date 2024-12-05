@@ -76,7 +76,7 @@
   .heatmap-legend {
     position: absolute;
     padding-top: 10%;
-    margin-right: 3%;
+    padding-right: 2%;
     right: 0;
     top: 50%;
     transform: translateY(-50%);

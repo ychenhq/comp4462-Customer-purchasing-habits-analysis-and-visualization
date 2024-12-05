@@ -5,7 +5,7 @@ let chosenState = null;
 
 function viewSankeyChart(bool) {
   const original = document.querySelectorAll(".chart-container-3d");
-  original.forEach((section) => {
+  original.forEach((section) => { 
     if (bool) section.classList.add("hidden");
     else section.classList.remove("hidden");
   });
@@ -30,15 +30,15 @@ function showContent(sectionId) {
   document.getElementById(sectionId).classList.remove("hidden");
 }
 
-function getColorForAmount(amount, maxAmount) {
-  const intensity = Math.floor((amount / maxAmount) * 255); // Scale intensity between 0 and 255
+function getColorForAmount(amount, minAmount, maxAmount) {
+  const intensity = Math.floor((amount - minAmount) / (maxAmount - minAmount) * 255); // Scale intensity between 0 and 255
   return `rgb(0, 0, ${255 - intensity})`; // Darker blue with higher amounts
 }
 
 // Update heatmap legend (color scale)
 function updateHeatmapLegend(minAmount, maxAmount) {
-  const minIntensity = Math.floor((minAmount / maxAmount) * 255);
-  const maxIntensity = Math.floor((maxAmount / maxAmount) * 255);
+  const minIntensity = Math.floor((minAmount - minAmount) / (maxAmount - minAmount) * 255);
+  const maxIntensity = Math.floor((maxAmount - minAmount) / (maxAmount - minAmount) * 255);
   const minColor = `rgb(0, 0, ${255 - minIntensity})`;
   const maxColor = `rgb(0, 0, ${255 - maxIntensity})`;
 
@@ -60,7 +60,7 @@ function updateMapWithHeatmap() {
   const minAmount = 14428;
   for (const key in statePurchaseAmounts) {
     const amount = statePurchaseAmounts[key];
-    const color = getColorForAmount(amount, maxAmount);
+    const color = getColorForAmount(amount, minAmount, maxAmount);
     if (simplemaps_usmap_mapdata.state_specific[key]) {
       // console.log("updating");
       simplemaps_usmap_mapdata.state_specific[key].color = color;
