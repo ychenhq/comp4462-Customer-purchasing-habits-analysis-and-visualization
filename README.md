@@ -40,9 +40,18 @@ To gain further insights, we merged the primary dataset with age-based data:
  - Item Purchased: Jeans, Glasses, Sweater, Blouse etc.
 
 - ***Enhanced Visualizations***: With more precise geographic location, we can expand the visualization with a choropleth map. We can present an overall view over the whole country, as well as refined views for each state, using different charts to show the purchasing trends accross seasons.
+![heatmap](https://github.com/ychenhq/comp4471/blob/main/images/heatmap.png)
+
+While on click state gives us the following details:
+![data_overview](https://github.com/ychenhq/comp4471/blob/main/images/data_overview.png)
+
+3. Data Overview
+With the expanded dataset, we could draw a Sankey Diagram that visualizes the correlation within color, item category, as well as the season. Adding responsiveness to nodes, we could visualize the correspondance and linkage between different nodes. 
+![sankey_chart](https://github.com/ychenhq/comp4471/blob/main/images/sankey_chart.png)
 
 4. Advanced Visualization and Insights
-- The combined data enabled us to produce more granular insights, it provides better analysis of location and purchasing trends by age group.
+- The combined data enabled us to produce more granular insights, it provides better analysis of location and purchasing trends by age group. In this project, we focused on Principle Analysis Component, a method that reduces the high dimentionality of a data to draw better conclusions of the data.
+![pca_analysis](https://github.com/ychenhq/comp4471/blob/main/images/pca_analysis.png)
 
 
 # Key Findings
