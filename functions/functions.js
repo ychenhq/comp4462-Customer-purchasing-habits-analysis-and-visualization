@@ -5,7 +5,6 @@ let chosenState = null;
 
 function viewSankeyChart(bool) {
   const original = document.querySelectorAll(".chart-container-3d");
-  console.log(original);
   original.forEach((section) => {
     if (bool) section.classList.add("hidden");
     else section.classList.remove("hidden");
@@ -44,7 +43,7 @@ function updateHeatmapLegend(minAmount, maxAmount) {
   const maxColor = `rgb(0, 0, ${255 - maxIntensity})`;
 
   // Create a linear gradient for the heatmap legend
-  const gradient = `linear-gradient(to right, ${minColor}, ${maxColor})`;
+  const gradient = `linear-gradient(to bottom, ${minColor}, ${maxColor})`;
 
   // Apply the gradient to the legend
   const legend = document.getElementById("heatmapLegend");

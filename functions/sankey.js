@@ -58,18 +58,66 @@ function SankeyChart(
     .attr("viewBox", [0, 0, width, height]);
 
   // Draw nodes (proportional to total link value)
-  svg
-    .append("g")
-    .selectAll("rect")
-    .data(sankeyNodes)
-    .join("rect")
-    .attr("x", (d) => d.x0)
-    .attr("y", (d) => d.y0)
-    .attr("height", (d) => d.y1 - d.y0)
-    .attr("width", (d) => d.x1 - d.x0)
-    .attr("fill", (d) => getColor(d.id)) // Use custom color function
-    .append("title")
-    .text((d) => `${d.id}\n${d3.format(format)(d.value)}`);
+  // Draw nodes (proportional to total link value)
+svg
+.append("g")
+.selectAll("rect")
+.data(sankeyNodes)
+.join("rect")
+.attr("x", (d) => d.x0)
+.attr("y", (d) => d.y0)
+.attr("height", (d) => d.y1 - d.y0)
+.attr("width", (d) => d.x1 - d.x0)
+.attr("fill", (d) => getColor(d.id)) // Use custom color function
+.style("cursor", "pointer") // Add cursor style for interactivity
+.on("click", function (event, clickedNode) { // Attach click handler HERE
+  console.log("Node clicked!", clickedNode); // Log the clicked node
+
+  // Get all linked nodes (both sources and targets)
+  const linkedNodes = new Set();
+  const linkedLinks = new Set();
+
+  sankeyLinks.forEach((link) => {
+    if (link.source.id === clickedNode.id) {
+      linkedNodes.add(link.target.id);
+      linkedLinks.add(`${link.source.id}-${link.target.id}`);
+    }
+    if (link.target.id === clickedNode.id) {
+      linkedNodes.add(link.source.id);
+      linkedLinks.add(`${link.source.id}-${link.target.id}`);
+    }
+  });
+
+  // Add the clicked node itself
+  linkedNodes.add(clickedNode.id);
+
+  // Update nodes: highlight linked, dim others
+  svg.selectAll("rect")
+    .transition()
+    .duration(300)
+    .style("opacity", (d) => (linkedNodes.has(d.id) ? 1 : 0.2));
+
+  // Update links: highlight connected links, dim others
+  svg.selectAll("path")
+    .transition()
+    .duration(300)
+    .style("opacity", (d) =>
+      d.source.id === clickedNode.id || d.target.id === clickedNode.id ? 1 : 0.1
+    )
+    .attr("stroke", (d) =>
+      d.source.id === clickedNode.id || d.target.id === clickedNode.id
+        ? getColor(d.source.id)
+        : "#ccc"
+    );
+
+  // Update labels: highlight linked, dim others
+  svg.selectAll("text")
+    .transition()
+    .duration(300)
+    .style("opacity", (d) => (linkedNodes.has(d.id) ? 1 : 0.2));
+}) // End of click handler
+.append("title") // Add title after click handler
+.text((d) => `${d.id}\n${d3.format(format)(d.value)}`);
 
   // Draw links
   svg
