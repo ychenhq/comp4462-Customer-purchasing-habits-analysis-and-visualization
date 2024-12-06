@@ -31,25 +31,28 @@ function showContent(sectionId) {
 }
 
 function getColorForAmount(amount, minAmount, maxAmount) {
-  const intensity = Math.floor((amount - minAmount) / (maxAmount - minAmount) * 255); // Scale intensity between 0 and 255
-  return `rgb(0, 0, ${255 - intensity})`; // Darker blue with higher amounts
+  const intensity = (amount - minAmount) / (maxAmount - minAmount); // Scale intensity between 0 and 1
+  return `rgb(25, ${Math.floor(37*(1-intensity) + 190*intensity)}, ${Math.floor(64*(1-intensity) + 125*intensity)})`; // Green palette
+//   return `rgb(${Math.floor(15*(1-intensity) + 110*intensity)}, ${Math.floor(15*(1-intensity) + 110*intensity)}, ${Math.floor(37*(1-intensity) + 240*intensity)})`; // Blue palette
 }
 
 // Update heatmap legend (color scale)
 function updateHeatmapLegend(minAmount, maxAmount) {
   const minIntensity = Math.floor((minAmount - minAmount) / (maxAmount - minAmount) * 255);
   const maxIntensity = Math.floor((maxAmount - minAmount) / (maxAmount - minAmount) * 255);
-  const minColor = `rgb(0, 0, ${255 - minIntensity})`;
-  const maxColor = `rgb(0, 0, ${255 - maxIntensity})`;
+  const minColor = `rgb(25,37,64)`; // Green palette
+  const maxColor = `rgb(25,190,125)`;
+//   const minColor = `rgb(15,15,37)`; // Blue palette
+//   const maxColor = `rgb(110,110,240)`;
 
   // Create a linear gradient for the heatmap legend
-  const gradient = `linear-gradient(to bottom, ${minColor}, ${maxColor})`;
+  const gradient = `linear-gradient(to top, ${minColor}, ${maxColor})`;
 
   // Apply the gradient to the legend
   const legend = document.getElementById("heatmapLegend");
   legend.querySelector(".legend-gradient").style.background = gradient;
-  const lowLabel = legend.querySelector(".legend-scale span:first-child");
-  const highLabel = legend.querySelector(".legend-scale span:last-child");
+  const lowLabel = legend.querySelector(".legend-scale span:last-child");
+  const highLabel = legend.querySelector(".legend-scale span:first-child");
   lowLabel.textContent = `$${minAmount.toLocaleString()}`;
   highLabel.textContent = `$${maxAmount.toLocaleString()}`;
 }
