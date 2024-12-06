@@ -53,8 +53,8 @@ function updateHeatmapLegend(minAmount, maxAmount) {
   legend.querySelector(".legend-gradient").style.background = gradient;
   const lowLabel = legend.querySelector(".legend-scale span:last-child");
   const highLabel = legend.querySelector(".legend-scale span:first-child");
-  lowLabel.textContent = `$${maxAmount.toLocaleString()}`;
-  highLabel.textContent = `$${minAmount.toLocaleString()}`;
+  lowLabel.textContent = `$${minAmount.toLocaleString()}`;
+  highLabel.textContent = `$${maxAmount.toLocaleString()}`;
 }
 
 function updateMapWithHeatmap() {
