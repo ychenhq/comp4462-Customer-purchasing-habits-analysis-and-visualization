@@ -100,9 +100,14 @@ Potential improvements include:
 - Jupyter Notebook
 - Libraries: `pandas`, `matplotlib`, `seaborn`, `numpy`
 
+### Usage
+
+Open file `main.html` to view all charts
+
 ### Installation
 
 Clone this repository:
 
 ```bash
 git clone https://github.com/yourusername/customer-purchasing-analysis.git
+
